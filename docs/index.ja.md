@@ -7,6 +7,14 @@ English version [here](./index.html)
 # CPS-lecture
 
 <br>
+## ロボットプログラミング（Robot Programming）
+ロボットのプログラムについて初歩から学びます。
+
+### [Jupyterの使い方](https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9)
+
+### [Pythonプログラミング](https://github.com/IRSL-tut/CPS-lecture/wiki/Python%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)
+
+<br>
 ## ロボットアセンブラー (Robot Assembler)
 ロボットアセンブラーの使い方について。
 
@@ -15,14 +23,6 @@ English version [here](./index.html)
 <br>
 ## ロボットシミュレーション（Robot Simulation）
 ロボットアセンブラーで作ったロボットを使ってシミュレーションします。
-
-<br>
-## ロボットプログラミング（Robot Programming）
-ロボットのプログラムについて初歩から学びます。
-
-### [Jupyterの使い方](https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9)
-
-### [Pythonプログラミング](https://github.com/IRSL-tut/CPS-lecture/wiki/Python%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)
 
 <br>
 ## 実機ロボットを作る（Building Actual Robot）
