@@ -24,6 +24,8 @@ English version [here](./index.html)
 ## ロボットシミュレーション（Robot Simulation）
 ロボットアセンブラーで作ったロボットを使ってシミュレーションします。
 
+### [Choreonoidでのシミュレーションの実行方法](https://github.com/IRSL-tut/CPS-lecture/wiki/Choreonoid%E3%81%A7%E3%81%AE%E3%82%B7%E3%83%9F%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E5%AE%9F%E8%A1%8C%E6%96%B9%E6%B3%95)
+
 <br>
 ## 実機ロボットを作る（Building Actual Robot）
 ロボットアセンブラーで作ったロボットの実機を作ります。
@@ -35,6 +37,12 @@ English version [here](./index.html)
 プログラムに必要なPythonのクラス、関数についてのリファレンスです。
 
 ### [IRSL プログラムリファレンス](https://irsl-tut.github.io/irsl_documents/ja)
+
+<br>
+## JupyterNotebook
+講義に使用するJupyterNotebookのファイルが置いてあります。
+
+### [JupyterNotebookファイル](https://github.com/IRSL-tut/CPS-lecture/tree/main/notebooks)
 
 <br>
 ## 講義と同じシステムを試してみる（How to try our system）
