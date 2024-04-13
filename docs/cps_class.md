@@ -6,3 +6,7 @@ layout: default
 <br>
  
 Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac.jp )
+
+# 第1回
+
+[Javascriptのサンプル](cps_prog00.html)
