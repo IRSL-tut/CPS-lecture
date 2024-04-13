@@ -5,6 +5,10 @@ layout: default
 Japanese version [here](./index.ja.html)
 
 # CPS-lecture
+
+<br>
+Class of Introduction to Architecture of Cyber Physical System in TUT [CPSclass(TUT)](./cps_class.html)
+
 <br>
 ## Robot Programming
 Learn the basics of robot programming.
@@ -33,6 +37,11 @@ How to build a robot generating by Robot-Assembler
 ## Programming Reference
 
 ### [IRSL's Software Documents](https://irsl-tut.github.io/irsl_documents/)
+
+<br>
+## JupyterNotebook
+
+### [JupyterNotebook files](https://github.com/IRSL-tut/CPS-lecture/tree/main/notebooks)
 
 <br>
 ## How to try our system

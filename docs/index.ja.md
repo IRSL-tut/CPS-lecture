@@ -7,6 +7,9 @@ English version [here](./index.html)
 # CPS-lecture
 
 <br>
+TUTでの講義CPS基礎については [CPS基礎(TUT)](./cps_class.html)
+
+<br>
 ## ロボットプログラミング（Robot Programming）
 ロボットのプログラムについて初歩から学びます。
 
