@@ -10,3 +10,11 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 # 第1回
 
 [Javascriptのサンプル](cps_prog00.html)
+
+# 第2回
+
+[ビジュアルプログラミング環境](javascript/blockly_irsl.html)
+
+サンプルプログラム(じゃんけん)
+
+サンプルプログラム(石とりゲーム)
