@@ -15,6 +15,9 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 [ビジュアルプログラミング環境](javascript/blockly_irsl.html)
 
-サンプルプログラム(じゃんけん)
+[サンプルプログラム(IF文)](javascript/sample_if.xml)
 
-サンプルプログラム(石とりゲーム)
+[サンプルプログラム(じゃんけん)](javascript/janken.xml)
+
+[サンプルプログラム(石とりゲーム)](javascript/stone_game.xml)
+ 
