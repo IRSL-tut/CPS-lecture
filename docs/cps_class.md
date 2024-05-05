@@ -13,11 +13,14 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 # 第2回
 
-[ビジュアルプログラミング環境](javascript/blockly_irsl.html)
+[ビジュアルプログラミング環境](lecture02/blockly_irsl.html)
 
-[サンプルプログラム(IF文)](javascript/sample_if.xml)
+[サンプルプログラム(IF文)](lecture02/sample_if.xml)
 
-[サンプルプログラム(じゃんけん)](javascript/janken.xml)
+[サンプルプログラム(じゃんけん)](lecture02/janken.xml)
 
-[サンプルプログラム(石とりゲーム)](javascript/stone_game.xml)
- 
+[サンプルプログラム(石とりゲーム)](lecture02/stone_game.xml)
+
+# 第4回
+
+[通信環境ホスト](lecture04/sensor_host.html)
