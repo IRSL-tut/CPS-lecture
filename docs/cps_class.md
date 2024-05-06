@@ -24,3 +24,11 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 # 第4回
 
 [通信環境ホスト](lecture04/sensor_host.html)
+
+[サンプルブロック(購読プログラム)](lecture04/subscribe_echo.xml)
+
+[サンプルブロック(購読-出版プログラム)](lecture04/subscribe_publish.xml)
+
+[サンプルブロック(遠隔手続き実行クライアント)](lecture04/action_client.xml)
+
+[サンプルブロック(遠隔手続き実行サーバー)](lecture04/action_server.xml)
