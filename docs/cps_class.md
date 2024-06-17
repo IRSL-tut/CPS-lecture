@@ -13,7 +13,7 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 # 第2回
 
-[ビジュアルプログラミング環境](lecture02/blockly_irsl.html)
+[ビジュアルプログラミング環境](lecture04/blockly_irsl.html)
 
 [サンプルプログラム(IF文)](lecture02/sample_if.xml)
 
