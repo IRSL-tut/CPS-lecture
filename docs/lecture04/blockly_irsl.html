@@ -200,6 +200,11 @@
         }
         return false;
     };
+    myGlobal.print = (msg) =>  {
+        console.log(msg);
+        var elm = document.getElementById("console-string");
+        elm.value += '\n' + msg;
+    };
     //myGlobal.BM.msg_pool.subscribe("test_topic",
     //                               (msg) => {
     //                                   console.log("callback");
@@ -427,7 +432,7 @@
         _runStartProcedure();
         ////
         if (myGlobal.debug) {
-            console.log(code)
+            myGlobal.print(code);
         }
         function initApi(interpreter, globalObject) {
             interpreter.setProperty(globalObject, "blockFuncs",
@@ -452,7 +457,7 @@
             break_tm -= tm;
         }
         if (myGlobal.debug) {
-            console.log(`step_wait: ${step_wait}, break_tm: ${break_tm}`);
+            myGlobal.print(`step_wait: ${step_wait}, break_tm: ${break_tm}`);
         }
         function nextStep() {
             while(true) {
@@ -588,28 +593,28 @@
         const elm_topic  = document.getElementById("topic-name");
         const elm_data   = document.getElementById("message-data");
         if (elm_select.value == "pub-string") {
-            console.log("pub-string: " + elm_topic.value);
+            myGlobal.print("pub-string: " + elm_topic.value);
             let msg = eval(elm_data.value);
-            console.log("   data: " + msg);
+            myGlobal.print("   data: " + msg);
             myGlobal.BM.msg_pool.publish(elm_topic.value, msg);
         } else if (elm_select.value == "publish") {
-            console.log("publish: " + elm_topic.value);
+            myGlobal.print("publish: " + elm_topic.value);
             let msg = eval(elm_data.value);
             try {
                 let tmp_;
                 eval('tmp_ = ' + elm_data.value + ';');
                 msg = tmp_;
             } catch (e) {
-                console.log(e);
+                myGlobal.print(e);
                 return;
             }
-            console.log("   data: " + msg);
+            myGlobal.print("   data: " + msg);
             myGlobal.BM.msg_pool.publish(elm_topic.value, msg);
         } else if (elm_select.value == "subscribe") {
-            console.log("subscribe: " + elm_topic.value);
+            myGlobal.print("subscribe: " + elm_topic.value);
             myGlobal.BM.msg_pool.subscribe(elm_topic.value);
         } else if (elm_select.value == "get-msg") {
-            console.log("get-msg: " + elm_topic.value);
+            myGlobal.print("get-msg: " + elm_topic.value);
             let msg = myGlobal.BM.msg_pool.getMessage(elm_topic.value);
             if (msg) {
                 elm_data.value = String(msg[1]);
