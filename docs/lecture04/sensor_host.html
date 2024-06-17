@@ -192,13 +192,12 @@
                 eval('tmp_ = ' + tp_data.value + ';');
                 msg = tmp_;
             } catch (e) {
-                console.log(e);
-                myGlobal.textarea = String(e);
+                myGlobal.print(String(e));
                 return;
             }
         }
         const msg_str = MessagePool.makeMessageStr(tp_name.value, msg);
-        console.log(msg_str);
+        myGlobal.print("pub: " + msg_str);
         sendMessageToClients(msg_str);
     }
     function clearText() {
