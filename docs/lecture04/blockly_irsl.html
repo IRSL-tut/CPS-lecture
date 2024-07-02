@@ -594,12 +594,10 @@
         const elm_data   = document.getElementById("message-data");
         if (elm_select.value == "pub-string") {
             myGlobal.print("pub-string: " + elm_topic.value);
-            let msg = eval(elm_data.value);
-            myGlobal.print("   data: " + msg);
-            myGlobal.BM.msg_pool.publish(elm_topic.value, msg);
+            myGlobal.print("   data: " + elm_data.value);
+            myGlobal.BM.msg_pool.publish(elm_topic.value, elm_data.value);
         } else if (elm_select.value == "publish") {
             myGlobal.print("publish: " + elm_topic.value);
-            let msg = eval(elm_data.value);
             try {
                 let tmp_;
                 eval('tmp_ = ' + elm_data.value + ';');
