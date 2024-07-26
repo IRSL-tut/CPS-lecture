@@ -1,0 +1,678 @@
+<html lang="en">
+  <!--html lang="ja"-->
+<head>
+  <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>   <!-- Load Blockly core -->
+  <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>    <!-- Load the default blocks -->
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script><!-- javascript generator -->
+  <script src="https://unpkg.com/blockly/python_compressed.js"></script>    <!-- python generator -->
+  <script src="https://unpkg.com/blockly/msg/en.js"></script>               <!-- Load a message file -->
+  <!--script src="https://cdn.jsdelivr.net/npm/blockly@1.0.0/msg/js/ja.min.js"--><!--/script>--><!-- 日本語化 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockly IRSL</title>
+  <style>
+    body {
+        /* margin: 0;
+    padding: 0; */
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+    .canvas-container {
+        width: 70%;
+        height: 98%;
+        margin-bottom: 5px;
+        margin-right: 5px;
+        border: 1px solid black;
+    }
+    .right-side {
+        width: 30%;
+        display: flex;
+        margin-right: 5px;
+        flex-direction: column;
+    }
+    .button-container {
+        display: grid; /* gridレイアウトを使用 */
+        /* grid-template-columns: repeat(2, 1fr); *//* 列を2つに等分 */
+        grid-template-columns: 1fr  2fr; /* 列を2つに等分 */
+        grid-gap: 10px; /* ボタン間の隙間 */
+        margin-right: 10px; /* テキストエリアとの隙間 */
+    }
+    .button {
+        width: auto;
+        height: 24px;
+        margin-bottom: 5px;
+        margin-left: 5px;
+        text-align: center;
+        border: 1px solid black;
+    }
+    .half_button {
+        width: 40%;
+        height: 24px;
+        margin-bottom: 5px;
+        margin-left: 5px;
+        text-align: center;
+        border: 1px solid black;
+    }
+    .input-area {
+        /*width: 100px;*/
+        width: auto;
+        height: 24px;
+        margin-left: 10px;
+    }
+    .input-area-half {
+        width: 80%;
+        height: 24px;
+        margin-left: 10px;
+    }
+    .input-area-full {
+        width: 85%;
+        height: 24px;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    .console-area {
+        width: 98%;
+        height: 25%;
+        margin-top: 10px;
+        margin-right: 5px;
+    }
+    .script-area {
+        width: 98%;
+        height: 50%;
+        margin-top: 10px;
+        margin-right: 5px;
+    }
+    .status {
+        font: 16px sans-serif;
+    }
+    .minlabel {
+        font: 14px sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <!--Visual Interfaces  -->
+  <div class="canvas-container" id="blocklyDiv"> </div>
+  <div class="right-side">
+    <div class="button-container">
+      <!-- -->
+      <button class="button" onclick="runStop()" id="button-stop" disabled >Stop</button>
+      <div class="status" id="run-status" ></div>
+      <!-- -->
+      <button class="button" onclick="runBlocks()" id="button-run-block" >Run Blocks</button>
+      <div>
+        <label for="interpreter-wait" id="interpreter-wait-value">0</label>
+        <input type="range" id="interpreter-wait" name="interpreter-wait" min="-100" max="100" step="2" value="0" />
+      </div>
+      <!-- -->
+      <div> </div>
+      <div class="minlabel">
+        step: <input type="checkbox" name="step-eval" id="step-eval" value="step-eval" />
+        highlight: <input type="checkbox" name="highlight-check" id="highlight-check" value="highlight-check" />
+      </div>
+      <!-- -->
+      <button class="button" onclick="uploadBlocks()"  >Upload blocks</button>
+      <div class="minlabel">
+        <input type="file" id="blocks-xml-file">
+        merge: <input type="checkbox" name="block-merged" id="blocks-merged" value="blocks-merged" />
+      </div>
+      <!-- -->
+      <button class="button" onclick="downloadBlocks()">Download blocks</button>
+      <input class="input-area" type="text" id="block_filename_input" name="filename" required minlength="1" maxlength="256" size="24" />
+      <!-- -->
+      <button class="button" onclick="clearBlocks()">Clear blocks</button>
+      <div><!-- dummy --></div>
+      <!-- -->
+      <button class="button" onclick="showScript()"    >Show script</button>
+      <select name="script-type" id="select-script">
+        <option value="javascript">javascript</option>
+        <option value="python">python</option>
+      </select>
+      <!-- -->
+      <button class="button" onclick="downloadScript()">Download script</button>
+      <input class="input-area" type="text" id="script_filename_input" name="filename" required minlength="1" maxlength="256" size="24" />
+      <!-- -->
+      <button class="button" onclick="clearText()">Clear text</button><div><!-- dummy --></div>
+      <!-- -->
+      <button class="button" onclick="buttonForScript()" id="script_button">ScriptButton</button>
+      <input class="input-area" type="text" id="script_button_text" name="script_button" required minlength="0" maxlength="256" size="24" />
+      <!-- TODO: Sensor ... -->
+      <!-- subscribe/publish/get button --> <!-- select --> <!-- topic-name -->
+      <!-- --> <!-- date --> <!-- data -->
+      <div>
+        <select name="msg-action-type" id="select-msg-action">
+          <option value="subscribe">subscribe</option>
+          <option value="publish">publish</option>
+          <option value="pub-string">pub-string</option>
+          <option value="get-msg">get-msg</option>
+        </select>
+        <button class="half_button" onclick="buttonForSensor()" id="sensor_button">Proc</button>
+      </div>
+      <div class="minlabel">
+        topic:
+        <input class="input-area-half" type="text" id="topic-name" name="topic-name" required minlength="0" maxlength="256" size="24" />
+      </div>
+      <!-- -->
+    </div>
+    <!--div class="minlabel">
+      callback:
+      <input class="input-area-full" type="text" id="callback-name" name="callback-name" required minlength="0" maxlength="256" size="20" />
+    </div-->
+    <div class="minlabel">
+      data :
+      <input class="input-area-full" type="text" id="message-data" name="message-data" required minlength="0" maxlength="256" size="24" />
+    </div>
+    <textarea class="console-area" id="console-string"></textarea>
+    <textarea class="script-area" id="script-source"></textarea>
+  </div>
+  <!-- -->
+
+  <!-- Script -->
+  <script src="./my_theme.js"></script>
+  <script src="./my_toolbox.js"></script>
+  <script src="./message_pool.js"></script>
+  <!-- https://github.com/NeilFraser/JS-Interpreter/raw/master/acorn_interpreter.js -->
+  <script src="./acorn_interpreter.js"></script>
+
+  <!-- script for message -->
+  <script>
+    if (window.name) {
+        document.title = window.name;
+    }
+    //// global variables
+    var myGlobal = {};
+    myGlobal.debug = false;
+    //
+    const url = new URL(window.location);
+    const params = url.searchParams;
+    if (params.size > 0 || !window.opener) {
+        const wshost = (() => {
+            let res = params.get('host');
+            if (res) {
+                return res;
+            } else {
+                return 'localhost';
+            }
+        })();
+        const wsport = (() => {
+            let res = params.get('port');
+            if (res) {
+                return res;
+            } else {
+                return '5001';
+            }
+        })();
+        const addr = 'ws://' + wshost + ':' + wsport;
+        console.log('server address: ' + addr);
+        myGlobal.BM = new WebMessage(addr, 1);
+        myGlobal.BM.msg_pool.debug = false;
+    } else {
+        myGlobal.opener = window.opener;
+        myGlobal.BM = new BrowserMessage(myGlobal.opener, 1);
+        myGlobal.BM.msg_pool.debug = false;
+    }
+    //
+    myGlobal.break_step = 0;
+    myGlobal.stop_button = true;
+
+    myGlobal.button_clicked = false;
+    myGlobal.button_text    = null;
+    myGlobal.enable_highlight = true;
+
+    myGlobal.proc_map = new Map();
+    myGlobal.proc_func = function (obj) {
+        obj.count++;
+        if (obj.count > 20) {
+            return "Done: " + obj.args;
+        }
+        return false;
+    };
+    myGlobal.print = (msg) =>  {
+        console.log(msg);
+        var elm = document.getElementById("console-string");
+        elm.value += '\n' + msg;
+    };
+    //myGlobal.BM.msg_pool.subscribe("test_topic",
+    //                               (msg) => {
+    //                                   console.log("callback");
+    //                                   console.log(msg);
+    //                               });
+    var blockFuncs = {};
+  </script>
+  <!-- functions for blockly -->
+  <script src="./util.js"> </script><!-- functions for message -->
+  <script>
+    myGlobal.keyinput = null;
+    document.addEventListener("keydown", (ev) => {
+        //console.log(ev);
+        //altKey
+        //metaKey
+        //shiftKey
+        //ctrlKey
+        //keyCode
+        myGlobal.keyinput = ev;
+    }, false);
+    async function myGetKey() { // async // TODO: rewrite
+        var result = "";
+        myGlobal.keyinput = null;
+        const sleep = (tm) => new Promise( (resolve) => setTimeout(resolve, tm) );
+        while (true) {
+            if (myGlobal.keyinput) {
+                result = myGlobal.keyinput.key
+                myGlobal.keyinput = null;
+                break;
+            }
+            await sleep(50);
+        }
+        return result;
+    }
+    async function getButton() { // async // TODO: rewrite
+        myGlobal.button_clicked = false;
+        myGlobal.button_text = null;
+        const sleep = (tm) => new Promise( (resolve) => setTimeout(resolve, tm) );
+        while (true) {
+            if (myGlobal.button_clicked) {
+                result = myGlobal.button_text;
+                myGlobal.button_clicked = false;
+                myGlobal.button_text = null;
+                break;
+            }
+            await sleep(50);
+        }
+        return result;
+    }
+    function f_text_to_logic(instr) {
+        var ins = instr.toLowerCase();
+        if (ins == "1" || ins == "t" || ins == "true") {
+            return true;
+        }
+        return false;
+    }
+    function f_text_to_number(instr) {
+        return Number(instr);
+    }
+    function start_from(instr) {
+        console.log("start_from: " + instr);
+    }
+    function end_with() {
+        console.log("end_with:");
+    }
+    function write_string(str) {
+        var elm = document.getElementById("console-string");
+        elm.value += str;
+        console.log(str);
+    }
+    function write_clear() {
+        var elm = document.getElementById("console-string");
+        elm.value = "";
+    }
+    function set_enable_highlight(enable) {
+        myGloabl.enable_highlight = enable;
+    }
+    function my_highlight_block(id) {
+        myGlobal.break_step += 1;
+        if (myGlobal.enable_highlight) {
+            return blockly_workspace.highlightBlock(id);
+        }
+    }
+    function subscribe(topic, callback=null) {
+        myGlobal.BM.msg_pool.subscribe(topic, callback);
+    }
+    function publish(topic, msg) {
+        myGlobal.BM.msg_pool.publish(topic, msg);
+    }
+    function get_message(topic) {
+        var msg = myGlobal.BM.msg_pool.getMessage(topic);
+        if (msg) {
+            return msg[1];
+        }
+        return null;
+    }
+    function get_obj_key(obj, key)  {
+        if (key in obj) {
+            return obj[key];
+        } else {
+            return undefined;
+        }
+    }
+    blockFuncs.f_text_to_logic = f_text_to_logic;
+    blockFuncs.f_text_to_number = f_text_to_number;
+    blockFuncs.start_from = start_from;
+    blockFuncs.end_with = end_with;
+    blockFuncs.write_string = write_string;
+    blockFuncs.write_clear = write_clear;
+    blockFuncs.set_enable_highlight = set_enable_highlight;
+    blockFuncs.highlightBlock = my_highlight_block;
+    blockFuncs.subscribe = subscribe;
+    blockFuncs.publish = publish;
+    blockFuncs.get_message = get_message;
+    blockFuncs.get_id = getID;
+    blockFuncs.register_proc = registerProc;
+    blockFuncs.delete_proc = deleteProc;
+    blockFuncs.do_proc = doProc;
+    blockFuncs.get_obj_key = get_obj_key;
+  </script>
+  <script src="irsl_blockly.js"></script>
+  <script>
+    console.log("Blockly: " + Blockly.VERSION)
+    //// blockly main
+    var blockly_workspace;
+    document.addEventListener("DOMContentLoaded", function () {
+        blockly_workspace =
+            Blockly.inject("blocklyDiv", {
+                theme: my_theme,
+                toolbox: my_toolbox,
+                grid: {
+                    spacing: 25,
+                    length: 3,
+                    colour: "#ccc",
+                    snap: true,
+                },
+            });
+        //// button
+        const btn_run = document.getElementById("button-run-block");
+        const btn_stp = document.getElementById("button-stop");
+        btn_run.disabled = null;
+        btn_stp.disabled = "disabled";
+        const blocks_ck = document.getElementById("blocks-merged");
+        blocks_ck.checked = false;
+        const step_ck = document.getElementById("step-eval");
+        step_ck.checked = true;
+        const highlight_ck = document.getElementById("highlight-check");
+        highlight_ck.checked = false;
+    });
+    //// functions for buttons
+    function _runStartProcedure() {
+        const elm = document.getElementById("run-status");
+        elm.innerHTML="Running";
+        elm.style.color="green";
+        const btn_run = document.getElementById("button-run-block");
+        const btn_stp = document.getElementById("button-stop");
+        btn_run.disabled = "disabled";
+        btn_stp.disabled = null;
+        if (myGlobal.debug) {
+            console.log("run-start");
+        }
+    }
+    function _runEndProcedure() {
+        const elm = document.getElementById("run-status");
+        elm.innerHTML="Done";
+        elm.style.color="black";
+        const btn_run = document.getElementById("button-run-block");
+        const btn_stp = document.getElementById("button-stop");
+        btn_run.disabled = null;
+        btn_stp.disabled = "disabled";
+        if (myGlobal.debug) {
+            console.log("run-end");
+        }
+    }
+    function _runStopProcedure() {
+        const elm = document.getElementById("run-status");
+        elm.innerHTML="Stop";
+        elm.style.color="black";
+        const btn_run = document.getElementById("button-run-block");
+        const btn_stp = document.getElementById("button-stop");
+        btn_run.disabled = null;
+        btn_stp.disabled = "disabled";
+        if (myGlobal.debug) {
+            console.log("run-stop");
+        }
+    }
+    function runBlocks () {
+        const step_ck = document.getElementById("step-eval");
+        if (step_ck.checked) {
+            console.log('step');
+            runBlocksStep();
+        } else {
+            console.log('no-step');
+            runBlocksNoStep();
+        }
+    }
+    function runBlocksNoStep () {
+        Blockly.JavaScript.addReservedWords("code");
+        Blockly.JavaScript.STATEMENT_PREFIX = null;
+        var code = Blockly.JavaScript.workspaceToCode(blockly_workspace);
+        var elm = document.getElementById("run-status");
+        _runStartProcedure();
+        try {
+            eval(code);
+        } catch (e) {
+            _runStopProcedure();
+            alert(e);
+            return;
+        }
+        _runEndProcedure();
+    }
+    function runStop() {
+        if(myGlobal.stop_button) {
+            _runStopProcedure();
+            return;
+        }
+        myGlobal.stop_button = true;
+    }
+    function runBlocksStep () {
+        Blockly.JavaScript.addReservedWords("code");
+        Blockly.JavaScript.STATEMENT_PREFIX = "blockFuncs.highlightBlock(%1);\n";
+        Blockly.JavaScript.addReservedWords("highlightBlock");
+        const highlight_ck = document.getElementById("highlight-check");
+        if (highlight_ck.checked) {
+            myGlobal.enable_highlight = true;
+        } else {
+            myGlobal.enable_highlight = false;
+        }
+        const wait = document.getElementById("interpreter-wait");
+        const tm = wait.value;
+        const code = Blockly.JavaScript.workspaceToCode(blockly_workspace);
+        ////
+        _runStartProcedure();
+        ////
+        if (myGlobal.debug) {
+            myGlobal.print(code);
+        }
+        function initApi(interpreter, globalObject) {
+            interpreter.setProperty(globalObject, "blockFuncs",
+                                    interpreter.nativeToPseudo(blockFuncs));
+            interpreter.setProperty(globalObject, "prompt",
+                                    interpreter.createNativeFunction( (txt) => {
+                                        return window.prompt(txt);
+                                    }));
+            interpreter.setProperty(globalObject, "alert",
+                                    interpreter.createNativeFunction( (txt) => {
+                                        return window.alert(txt);
+                                    }));
+        }
+        var myInterpreter = new Interpreter(code, initApi);
+        myGlobal.break_step = 0;
+        myGlobal.stop_button = false;
+        var break_tm = 1;
+        var step_wait = 0;
+        if(tm >= 0) {
+            step_wait += tm*10;
+        } else {
+            break_tm -= tm;
+        }
+        if (myGlobal.debug) {
+            myGlobal.print(`step_wait: ${step_wait}, break_tm: ${break_tm}`);
+        }
+        function nextStep() {
+            while(true) {
+                if(myInterpreter.step()) {
+                    if(myGlobal.break_step >= break_tm) {
+                        myGlobal.break_step = 0;
+                        setTimeout(nextStep, step_wait);
+                        return;
+                    }
+                } else {
+                    _runEndProcedure();
+                    break;
+
+                }
+                // TODO check StopButton
+                if (myGlobal.stop_button) {
+                    _runStopProcedure();
+                    break;
+                }
+            }
+        }
+        nextStep();
+    }
+    function clearBlocks () {
+        blockly_workspace.clear();
+    }
+    function downloadScript () {
+        Blockly.JavaScript.addReservedWords("code");
+        var code = Blockly.JavaScript.workspaceToCode(blockly_workspace);
+        var blob = new Blob([ code ], { "type" : "text/plain" });
+        //
+        var felm = document.getElementById("script_filename_input");
+        var fname="blockly_codes.js";
+        if (felm && felm.value) {
+            fname = felm.value;
+        }
+        // download (blob, fname)
+        if (window.navigator.msSaveBlob) {
+            //console.log("Here: window.navigator.msSaveBlob")
+            window.navigator.msSaveBlob(blob, fname);
+            window.navigator.msSaveOrOpenBlob(blob, fname);
+        } else {
+            //console.log("Here: element")
+            //document.getElementById("download_script").href = window.URL.createObjectURL(blob);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            document.body.appendChild(a);
+            a.download = fname;
+            a.href = url;
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+    }
+    function showScript() {
+        var code = null;
+        var elm = document.getElementById("select-script");
+        Blockly.JavaScript.STATEMENT_PREFIX = null;
+        const highlight_ck = document.getElementById("highlight-check");
+        if (highlight_ck.checked) {
+            Blockly.JavaScript.STATEMENT_PREFIX = "blockFuncs.highlightBlock(%1);\n";
+            Blockly.JavaScript.addReservedWords("highlightBlock");
+        }
+        if (elm.value == "javascript") {
+            Blockly.JavaScript.addReservedWords("code");
+            code = Blockly.JavaScript.workspaceToCode(blockly_workspace);
+        } else if (elm.value == "python") {
+            Blockly.Python.addReservedWords("code");
+            code = Blockly.Python.workspaceToCode(blockly_workspace);
+        }
+        var txarea = document.getElementById("script-source");
+        if (txarea && code) {
+            txarea.value = code;
+        }
+    }
+    function uploadBlocks() {
+        const input = document.getElementById("blocks-xml-file");
+        const check = document.getElementById("blocks-merged");
+        const reader = new FileReader();
+        reader.onload = function() {
+            // console.log(reader.result);
+            var xml = Blockly.utils.xml.textToDom(reader.result);
+            if (!check.checked) {
+                blockly_workspace.clear();
+            }
+            Blockly.Xml.domToWorkspace(xml, blockly_workspace);
+        };
+        console.log(input.files[0]);
+        reader.readAsText(input.files[0]);
+    }
+    function downloadBlocks() {
+        var xml = Blockly.Xml.workspaceToDom(blockly_workspace);
+        var xml_txt = Blockly.Xml.domToText(xml);
+
+        var blob = new Blob([ xml_txt ], { "type" : "text/plain" });
+        //
+        var felm = document.getElementById("block_filename_input");
+        var fname="blockly_blocks.xml";
+        if (felm && felm.value) {
+            fname = felm.value;
+        }
+        // download (blob, fname)
+        if (window.navigator.msSaveBlob) {
+            //console.log("Here: window.navigator.msSaveBlob")
+            window.navigator.msSaveBlob(blob, fname);
+            window.navigator.msSaveOrOpenBlob(blob, fname);
+        } else {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            document.body.appendChild(a);
+            a.download = fname;
+            a.href = url;
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+    }
+    function buttonForScript() {
+        let elm = document.getElementById("script_button_text");
+        console.log("button: " + elm.value);
+        myGlobal.button_text    = elm.value;
+        myGlobal.button_clicked = true;
+        if (myGlobal.button_callback) {
+            myGlobal.button_callback(elm.value);
+        }
+    }
+    function clearText() {
+        let elm = document.getElementById("console-string");
+        elm.value = "";
+    }
+    function buttonForSensor() {
+        const elm_select = document.getElementById("select-msg-action");
+        const elm_topic  = document.getElementById("topic-name");
+        const elm_data   = document.getElementById("message-data");
+        if (elm_select.value == "pub-string") {
+            myGlobal.print("pub-string: " + elm_topic.value);
+            myGlobal.print("   data: " + elm_data.value);
+            myGlobal.BM.msg_pool.publish(elm_topic.value, elm_data.value);
+        } else if (elm_select.value == "publish") {
+            myGlobal.print("publish: " + elm_topic.value);
+            try {
+                let tmp_;
+                eval('tmp_ = ' + elm_data.value + ';');
+                msg = tmp_;
+            } catch (e) {
+                myGlobal.print(e);
+                return;
+            }
+            myGlobal.print("   data: " + msg);
+            myGlobal.BM.msg_pool.publish(elm_topic.value, msg);
+        } else if (elm_select.value == "subscribe") {
+            myGlobal.print("subscribe: " + elm_topic.value);
+            myGlobal.BM.msg_pool.subscribe(elm_topic.value);
+        } else if (elm_select.value == "get-msg") {
+            myGlobal.print("get-msg: " + elm_topic.value);
+            let msg = myGlobal.BM.msg_pool.getMessage(elm_topic.value);
+            console.dir(msg[1]);
+            if (msg) {
+                elm_data.value = String(msg[1]);
+                let con_str = document.getElementById("console-string");
+                con_str.value = String(msg[0]);
+            } else {
+                elm_data.value = "No data."
+            }
+        }
+    }
+    //// html callback
+    {
+        const elm_val   = document.getElementById("interpreter-wait-value");
+        const elm_range = document.getElementById("interpreter-wait");
+        elm_range.addEventListener("change",
+                                   (ev) => {
+                                       if (myGlobal.debug) {
+                                           console.log("change, range = " + ev.target.value);
+                                       }
+                                       elm_val.innerHTML= String(ev.target.value);
+                                   });
+        elm_val.innerHTML= String(elm_range.value);
+    }
+  </script>
+
+</body>
+</html>
