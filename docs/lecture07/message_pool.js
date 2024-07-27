@@ -268,7 +268,7 @@ class MessagePool {
             console.log("cb_func: " + buf.callback);
           }
           //if (buf.callback && buf.callback.apply(buf, [msg.data])) {
-          if (buf.callback && buf.callback(buf, [msg.data])) {
+          if (buf.callback && buf.callback(msg.data)) {
             if (this.debug) {
               console.log('do not stack message to buffer');
             }

@@ -68,6 +68,10 @@
     <div id="button-container">
       <button class="button" onclick="startClient()"     >Start Client</button> <div><!-- dummy element --></div>
       <button class="button" onclick="checkClientList()" >Check Clients</button> <div><!-- dummy element --></div>
+      <div><br><!-- dummy element --></div><div><!-- dummy element --></div>
+      <button class="button" onclick="startMaze()" >Start Maze</button>      <div><!-- dummy element --></div>
+      <button class="button" onclick="startPong()" >Start Ping Pong</button> <div><!-- dummy element --></div>
+      <div><br><!-- dummy element --></div><div><!-- dummy element --></div>
       <button class="button" onclick="checkMessages()"   >Check Messages</button> <div><!-- dummy element --></div>
       <button class="button" onclick="sendMsgByButton()" >Send Message</button>
       <div> topic: <input type="text" class="input-area" id="topic-name"></div>
@@ -245,6 +249,26 @@
         //console.log('close: ' + tabname);
         //checkClientList();
         //};
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startMaze() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Maze:' + len;
+        // add options
+        var new_w = window.open("./maze_game.html", tabname);
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startPong() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Pong:' + len;
+        // add options
+        var new_w = window.open("./ping_pong_game.html", tabname);
         myGlobal.clients.set(tabname, new_w);
         myGlobal.clientCount += 1;
         updateClientList();
