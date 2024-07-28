@@ -1,0 +1,399 @@
+<html lang="en">
+<head>
+  <title>Maze Game</title>
+  <style>
+    #canvas {
+        height: 98%;
+        width: 98%;
+        overflow-y: scroll;
+        overflow-x: scroll;
+    }
+  </style>
+</head>
+<script src="./message_pool.js"></script>
+<script src="./matter.min.js"></script>
+<body>
+  <div id="canvas"> </div>
+  <script>
+    if (window.name) {
+        document.title = window.name;
+    }
+    const myGlobal = {};
+    const url = new URL(window.location);
+    const params = url.searchParams;
+    if (params.size > 0 || !window.opener) {
+        const wshost = (() => {
+            let res = params.get('host');
+            if (res) {
+                return res;
+            } else {
+                return 'localhost';
+            }
+        })();
+        const wsport = (() => {
+            let res = params.get('port');
+            if (res) {
+                return res;
+            } else {
+                return '5001';
+            }
+        })();
+        const addr = 'ws://' + wshost + ':' + wsport;
+        console.log('server address: ' + addr);
+        myGlobal.BM = new WebMessage(addr, 1);
+        myGlobal.BM.msg_pool.debug = false;
+    } else {
+        myGlobal.opener = window.opener;
+        myGlobal.BM = new BrowserMessage(myGlobal.opener, 1);
+        myGlobal.BM.msg_pool.debug = false;
+    }
+  </script>
+  <script>
+    // module aliases
+    var Engine = Matter.Engine,
+        Render = Matter.Render,
+        Runner = Matter.Runner,
+        Bodies = Matter.Bodies,
+        Body   = Matter.Body,
+        Events = Matter.Events,
+        Constraint = Matter.Constraint,
+        Composite = Matter.Composite;
+
+    // create an engine
+    var engine = Engine.create();
+
+    var mycanvas = document.getElementById("canvas");
+
+    console.log(mycanvas.clientHeight);
+    console.log(mycanvas.clientWidth);
+    myGlobal.height = mycanvas.clientHeight;
+    myGlobal.width  = mycanvas.clientWidth;
+    // create a renderer
+    var render = Render.create({
+        //element: document.body,
+        element: mycanvas,
+        engine: engine,
+        options: {
+            width:  mycanvas.clientWidth,
+            height: mycanvas.clientHeight,
+            showAngleIndicator: true,
+            wireframes: false,
+        }
+    });
+    myGlobal.wall_thickness = 15;
+    { // determine grid
+        const dim_y = Math.floor((myGlobal.height - 2*myGlobal.wall_thickness)/ 160.0);
+        if ( dim_y > 4 ) {
+            myGlobal.dimension_y = 4;
+        } else {
+            myGlobal.dimension_y = dim_y;
+        }
+        const dim_x = Math.floor((myGlobal.width - 2*myGlobal.wall_thickness)/ 160.0);
+        if ( dim_x > 8 ) {
+            myGlobal.dimension_x = 8;
+        } else {
+            myGlobal.dimension_x = dim_x;
+        }
+        myGlobal.unit_y = myGlobal.height / myGlobal.dimension_y;
+        myGlobal.unit_x = myGlobal.width  / myGlobal.dimension_x;
+        if (myGlobal.width > myGlobal.height) {
+            myGlobal.length = myGlobal.width;
+        } else {
+            myGlobal.length = myGlobal.height;
+        }
+        if (myGlobal.unit_x > myGlobal.unit_y) {
+            myGlobal.unit =  myGlobal.unit_y;
+        } else {
+            myGlobal.unit =  myGlobal.unit_x;
+        }
+    }
+
+    // function
+    var defaultCategory = 0x0001,
+        objCategory     = 0x0002,
+        envCategory     = 0x0004,
+        sensorCategory  = 0x0008,
+        goalCategory    = 0x0010;
+
+
+    console.log("myGlobal.unit_x: " + myGlobal.unit_x);
+    console.log("myGlobal.unit_y: " + myGlobal.unit_y);
+    console.log("myGlobal.unit: " + myGlobal.unit);
+    const initial_x = myGlobal.unit_x * 0.5;
+    const initial_y = myGlobal.unit_y * 0.5;
+    const body_len   = myGlobal.unit * 0.14;
+    const head_len   = body_len * 0.5;
+    const sensor_rad = body_len * 0.25;
+    sensor_lst = [];
+    function makeLineSensor(sensor_lst, radius, length,  start_x, start_y, overwrap=0.0) {
+        const n = Math.ceil(length / (2 * (1.0 - overwrap) * radius));
+        const offset = 2 * (1.0 - overwrap) * radius;
+        for(var i = 0; i < n; i++) {
+            var circle = Bodies.circle(start_x + i*offset, start_y, radius, {
+                isSensor: true,
+                render: {
+                    strokeStyle: '#0000F0',
+                    //fillStyle:   '#808000',
+                    fillStyle: 'transparent',
+                    lineWidth: 2
+                },
+                collisionFilter: {
+                    category: sensorCategory,
+                    mask: envCategory
+                },
+                label: 'dist' + i,
+                density: 0.0, //0.001
+                sensorInfo: (i * offset)/myGlobal.unit,
+            });
+            sensor_lst.push(circle);
+        }
+    }
+    makeLineSensor(sensor_lst, sensor_rad, myGlobal.length, initial_x + body_len*1.5, initial_y);
+
+    var bd_agent = Bodies.fromVertices(initial_x, initial_y,
+                                       [[{x:body_len, y:body_len}, {x:-body_len, y:body_len},
+                                         {x:-body_len, y:-body_len}, {x:body_len, y:-body_len},
+                                         {x:(body_len+head_len), y:0}]], {
+        render: {
+            strokeStyle: '#f50000',
+            fillStyle:   '#f50000',
+            lineWidth: 1
+        },
+        label: "agent_main",
+        slop: 0.1,
+        frictionAir:    0.0,  // 0.01
+        friction:       0.05, // 0.1
+        frictionStatic: 0.1,  // 0.5
+        density: 0.002, //0.001
+    });
+    var agent = Body.create({
+        parts: [bd_agent].concat(sensor_lst),
+        collisionFilter: {
+            category: objCategory,
+            mask: envCategory
+        },
+        slop: 0.001,
+        frictionAir:    0.0,  // 0.01
+        friction:       0.05, // 0.1
+        frictionStatic: 0.1,  // 0.5
+        density: 0.002, //0.001
+        label: 'agent',
+    });
+    //Body.setCentre(agent, {x:initial_x, y:initial_y});
+    //Body.setPosition(agent, {x:initial_x, y:initial_y});
+    // Body.setAngle(agent, 0.0); // random ??
+    //console.log(agent.position.x);
+    //console.log(agent.position.y);
+
+    const wall_options = {
+        isStatic: true,
+        render: {
+            strokeStyle: '#808080',
+            fillStyle:   '#808080',
+            lineWidth: 3
+        },
+        collisionFilter: {
+            category: envCategory,
+            mask: objCategory,
+        },
+        slop: 0.001,
+        frictionAir:    0.0, // 0.01
+        friction:       0.05, // 0.1
+        frictionStatic: 0.1, // 0.5
+    };
+    const ground_u = Bodies.rectangle(1500, 0,
+                                    3000, 2*myGlobal.wall_thickness, wall_options);
+    ground_u.label = 'ground_u';
+    const ground_d = Bodies.rectangle(1500, mycanvas.clientHeight,
+                                    3000, 2*myGlobal.wall_thickness, wall_options);
+    ground_d.label = 'ground_d';
+
+    const ground_r = Bodies.rectangle(0, 1500,
+                                      2*myGlobal.wall_thickness, 3000, wall_options);
+    ground_r.label = 'ground_r';
+    const ground_l = Bodies.rectangle(mycanvas.clientWidth, 1500,
+                                      2*myGlobal.wall_thickness, 3000, wall_options);
+    ground_l.label = 'ground_l';
+    // vertical   wall -> dim_x - 1, dim_y
+    // horizontal wall -> dim_x, dim_y - 1
+    function makeWall(wall_lst, x, y, vertical = true) {
+        if (vertical) {
+            // v_offset
+            // h_offset
+            const bd = Bodies.rectangle((x + 1)* myGlobal.unit_x, (y + 0.5) * myGlobal.unit_y,
+                                        myGlobal.wall_thickness, myGlobal.unit_y - 0.1*myGlobal.wall_thickness,
+                                        wall_options);
+            bd.label = "vwall" + x + "_" + y;
+            wall_lst.push(bd);
+        } else {
+            const bd = Bodies.rectangle((x + 0.5) * myGlobal.unit_x, (y + 1)* myGlobal.unit_y,
+                                        myGlobal.unit_x - 0.1*myGlobal.wall_thickness, myGlobal.wall_thickness,
+                                        wall_options);
+            bd.label = "hwall" + x + "_" + y;
+            wall_lst.push(bd);
+        }
+    }
+    let wall_lst = [];
+    // v0,0 h0,0
+    //// setting of wall
+    //makeWall(wall_lst, 0, 0, true);
+    //makeWall(wall_lst, 1, 1, true);
+    //makeWall(wall_lst, 2, 2, true);
+    //makeWall(wall_lst, 3, 3, true);
+    //makeWall(wall_lst, 1, 1, false);
+    //makeWall(wall_lst, 2, 1, false);
+    //makeWall(wall_lst, 2, 2, false);
+    for(let i = 0; i < 4; i++ ) {
+        if (Math.random() > 0.5) {
+            // vertical
+            const xx = Math.floor(Math.random() * (myGlobal.dimension_x -1));
+            const yy = Math.floor(Math.random() * myGlobal.dimension_y);
+            makeWall(wall_lst, xx, yy, true);
+        } else {
+            // horizontal
+            const xx = Math.floor(Math.random() * myGlobal.dimension_x);
+            const yy = Math.floor(Math.random() * (myGlobal.dimension_y -1));
+            makeWall(wall_lst, xx, yy, false);
+        }
+    }
+    const goal_obj = Bodies.rectangle(myGlobal.unit_x * (myGlobal.dimension_x - 0.5),
+                                      myGlobal.unit_y * (myGlobal.dimension_y - 0.5),
+                                      myGlobal.unit_x, myGlobal.unit_y, {
+                                          isStatic: true,
+                                          isSensor: true,
+                                          render: {
+                                              strokeStyle: '#208020',
+                                              //fillStyle:   '#208020',
+                                              fillStyle: 'transparent',
+                                              lineWidth: 3
+                                          },
+                                          collisionFilter: {
+                                              category: envCategory,
+                                              mask: objCategory,
+                                          },
+                                          label: 'goal',
+                                          slop: 0.001,
+                                          frictionAir:    0.0, // 0.01
+                                          friction:       0.05, // 0.1
+                                          frictionStatic: 0.1, // 0.5
+                                      });
+
+    let allComps = [agent, ground_u, ground_d, ground_r, ground_l, goal_obj];
+    Composite.add(engine.world, allComps.concat(wall_lst));
+    engine.world.gravity.y = 0;
+    engine.world.gravity.x = 0;
+    //engine.timing.timeScale = 0.5;
+
+    Events.on(engine, 'collisionActive', function(ev) {
+        const pairs = ev.pairs;
+        let minx = 100000;
+        pairs.forEach((p) => {
+            if (p.bodyA.collisionFilter.category == sensorCategory) {
+                if (p.bodyB.label != 'goal') {
+                    if (p.bodyA.sensorInfo < minx) {
+                        minx = p.bodyA.sensorInfo;
+                        //console.log(p.bodyB.label);
+                    }
+                }
+            } else if (p.bodyB.collisionFilter.category == sensorCategory) {
+                if (p.bodyA.label != 'goal') {
+                    if (p.bodyB.sensorInfo < minx) {
+                        minx = p.bodyB.sensorInfo;
+                        //console.log(p.bodyA.label);
+                    }
+                }
+            }
+        });
+        if (minx < 100000) {
+            //console.log("sens: "  + minx);
+            const msg = minx;
+            myGlobal.BM.msg_pool.publish('sensor', msg);
+        }
+    });
+    const max_vel =  0.4;
+    const min_vel = -0.4;
+    myGlobal.control_vx   = 0.0;
+    myGlobal.control_vy   = 0.0;
+    myGlobal.control_vth = 0.0;
+    Events.on(engine, 'afterUpdate', (ev) => {
+        const bp = agent.position;
+        //// control
+        const gmsg = myGlobal.BM.msg_pool.getMessage('control');
+        if (gmsg) {
+            const res = gmsg[1];
+            //console.dir(res);
+            let vx  = res[0];
+            let vy  = res[1];
+            let vth = 0.0
+            if (res.length > 2) {
+                vth = res[2];
+            }
+            if (vx > max_vel) {
+                vx = max_vel;
+            } else if (vx < min_vel) {
+                vx = min_vel;
+            }
+            if (vy > max_vel) {
+                vy = max_vel;
+            } else if (vy < min_vel) {
+                vy = min_vel;
+            }
+            if (vth > 6.28) {
+                vth = 6.28;
+            } else if (vth < -6.28) {
+                vth = -6.28;
+            }
+            vth = vth / 60.0; // ?? why
+            myGlobal.control_vx   = vx * myGlobal.unit / 60.0;
+            myGlobal.control_vy   = vy * myGlobal.unit / 60.0;
+            myGlobal.control_vth  = vth;
+        }
+        //// update velocity (local coordinates)
+        const sa = Math.sin(agent.angle);
+        const ca = Math.cos(agent.angle);
+        const vx = myGlobal.control_vx * ca - myGlobal.control_vy * sa;
+        const vy = myGlobal.control_vx * sa + myGlobal.control_vy * ca;
+        Body.setVelocity(agent, {x: vx , y: vy});
+        Body.setAngularVelocity(agent, myGlobal.control_vth);
+        //// sensor publish
+        const msg = {
+            agent: {x: (agent.position.x / myGlobal.unit_x),
+                    y: (agent.position.y / myGlobal.unit_y),
+                    theta: (agent.angle % Math.PI) },
+        };
+        myGlobal.BM.msg_pool.publish('world', msg);
+    });
+    //1 position = 1px
+    //1 speed = 1px per step
+    //1 step = 16.666ms
+    function restart() {
+        Body.setPosition(agent, {x:initial_x, y:initial_y});
+        Body.setAngle(agent, 0.0); // random ??
+        Body.setVelocity(agent, {x: 0.0, y: 0.0});
+        Body.setAngularVelocity(agent, 0.0);
+        myGlobal.control_vx   = 0;
+        myGlobal.control_vy   = 0;
+        myGlobal.control_vth  = 0;
+    }
+    function game_callback(msg) {
+        if (msg == 'restart') {
+            restart();
+            return false;
+        }
+        return false;
+    }
+    myGlobal.BM.msg_pool.subscribe('control');
+    myGlobal.BM.msg_pool.subscribe('game', game_callback);
+
+    // run the renderer
+    Render.run(render);
+
+    // create runner
+    var runner = Runner.create();
+    // run the engine
+    Runner.run(runner, engine);
+  </script>
+  </body>
+</html>
+
+

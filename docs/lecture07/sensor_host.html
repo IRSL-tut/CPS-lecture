@@ -224,10 +224,10 @@
     }
     function sendMessageToClients(msg, source = undefined) {
         var closed = false;
-      const jmsg = JSON.parse(msg);
-      if ("topic" in jmsg) {
-      jmsg.topic
-      }
+        //const jmsg = JSON.parse(msg);
+        //if ("topic" in jmsg) {
+        //    jmsg.topic
+        //}
         myGlobal.clients.forEach((value, key) => {
             if (value.closed) {
                 closed = true;
