@@ -1,0 +1,69 @@
+var tmp, world, sensor, agent;
+
+
+blockFuncs.highlightBlock('[{`9wjWTor0*l8;^266)');
+blockFuncs.subscribe('world');
+blockFuncs.highlightBlock('t|2y$MM|10u~To/q1Gm!');
+blockFuncs.subscribe('sensor');
+blockFuncs.highlightBlock('RhTEYkqDHy9|WY5%8kuh');
+for (var count2 = 0; count2 < 10; count2++) {
+  blockFuncs.highlightBlock(');~6xVK=h*qaJg?@7/Vq');
+  blockFuncs.publish('control', [0, 0, 0.3]);
+  blockFuncs.highlightBlock('`c#kI%`A6lNx3ay.QnpL');
+  for (var count = 0; count < 100; count++) {
+    blockFuncs.highlightBlock('mcxRYxqq{i@qdyYB-YvP');
+    tmp = (blockFuncs.get_message('world'));
+    blockFuncs.highlightBlock('9rdsLyQ@Tl*W3{=KZ`[A');
+    if (tmp) {
+      blockFuncs.highlightBlock('=}[7Se;sJt0U%V62VY[;');
+      world = tmp;
+    }
+    blockFuncs.highlightBlock('x{A,vZJ){`bvm3JqfVcR');
+    tmp = (blockFuncs.get_message('sensor'));
+    blockFuncs.highlightBlock('R4D^TxD(f3_H|n+TFrL=');
+    if (tmp) {
+      blockFuncs.highlightBlock('g/aqGn3j$yeopor60)iT');
+      sensor = tmp;
+    }
+    blockFuncs.highlightBlock('8Gnkz!)Ef*K|S;}R2,K_');
+    if (sensor && world) {
+      blockFuncs.highlightBlock('*GM}NS1c+WFZ~JEBgZ@K');
+      agent = (blockFuncs.get_obj_key(world, "agent"));
+      blockFuncs.highlightBlock('0;im!BE=Yo3#/s`j{??%');
+      blockFuncs.write_string((['sensor: ',sensor,', th: ',blockFuncs.get_obj_key(agent, "theta")].join('')));
+      blockFuncs.highlightBlock(',EfSx[xi}nsEGu67jh#A');
+      blockFuncs.write_string("\n");
+      blockFuncs.highlightBlock('m98;GHkHa|tJ8$q12;O1');
+      if (sensor > 1.4) {
+        blockFuncs.highlightBlock('_*dz-!3}-ZMZ0:3(TFu=');
+        blockFuncs.highlightBlock('`c#kI%`A6lNx3ay.QnpL');
+        break;
+      }
+    }
+    blockFuncs.highlightBlock('`c#kI%`A6lNx3ay.QnpL');
+  }
+  blockFuncs.highlightBlock('%|ULT!Riag8`En-5{=mx');
+  blockFuncs.publish('control', [0.5, 0, 0]);
+  blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+  while (true) {
+    blockFuncs.highlightBlock('@Q5H-F!rhMKy5wwlWGLu');
+    sensor = (blockFuncs.get_message('sensor'));
+    blockFuncs.highlightBlock('?Yi:eX[P#Sa}%2C--re%');
+    if (sensor) {
+      blockFuncs.highlightBlock('DV+Zn*Nb?ZB{cAVE4u^X');
+      blockFuncs.write_string(('sensor: ' + String(sensor)));
+      blockFuncs.highlightBlock('tZ_S8r}DP|x=$/I(PLN2');
+      blockFuncs.write_string("\n");
+      blockFuncs.highlightBlock('laZR)/(*9Tcw2RUMu~{b');
+      if (sensor < 0.7) {
+        blockFuncs.highlightBlock('wFeWWt$!FwAu6[$++Ni^');
+        blockFuncs.publish('control', [0, 0, 0]);
+        blockFuncs.highlightBlock('9@*n=7MXFm*mH^a1mql%');
+        blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+        break;
+      }
+    }
+    blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+  }
+  blockFuncs.highlightBlock('RhTEYkqDHy9|WY5%8kuh');
+}

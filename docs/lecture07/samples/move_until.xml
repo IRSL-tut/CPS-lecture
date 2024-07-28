@@ -1,0 +1,28 @@
+var sensor;
+
+
+blockFuncs.highlightBlock('t|2y$MM|10u~To/q1Gm!');
+blockFuncs.subscribe('sensor');
+blockFuncs.highlightBlock('%|ULT!Riag8`En-5{=mx');
+blockFuncs.publish('control', [0.5, 0, 0]);
+blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+while (true) {
+  blockFuncs.highlightBlock('@Q5H-F!rhMKy5wwlWGLu');
+  sensor = (blockFuncs.get_message('sensor'));
+  blockFuncs.highlightBlock('?Yi:eX[P#Sa}%2C--re%');
+  if (sensor) {
+    blockFuncs.highlightBlock('DV+Zn*Nb?ZB{cAVE4u^X');
+    blockFuncs.write_string(('sensor: ' + String(sensor)));
+    blockFuncs.highlightBlock('tZ_S8r}DP|x=$/I(PLN2');
+    blockFuncs.write_string("\n");
+    blockFuncs.highlightBlock('laZR)/(*9Tcw2RUMu~{b');
+    if (sensor < 1) {
+      blockFuncs.highlightBlock('wFeWWt$!FwAu6[$++Ni^');
+      blockFuncs.publish('control', [0, 0, 0]);
+      blockFuncs.highlightBlock('9@*n=7MXFm*mH^a1mql%');
+      blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+      break;
+    }
+  }
+  blockFuncs.highlightBlock('r-V{#Y|dipNpg`Q[?^o0');
+}

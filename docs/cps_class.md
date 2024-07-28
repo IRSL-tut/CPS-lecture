@@ -32,3 +32,21 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 [サンプルブロック(遠隔手続き実行クライアント)](lecture04/action_client.xml)
 
 [サンプルブロック(遠隔手続き実行サーバー)](lecture04/action_server.xml)
+
+# 第7回
+
+[ゲーム環境ホスト](lecture07/sensor_host.html)
+
+[サンプルブロック(環境データを読む)](lecture07/samples/read_world.xml)
+
+[サンプルブロック(センサーを読む)](lecture07/samples/read_sensor.xml)
+
+[サンプルブロック(制御指令を送る)](lecture07/samples/send_control.xml)
+
+[サンプルブロック(空間を探す)](lecture07/samples/search_space.xml)
+
+[サンプルブロック(移動する)](lecture07/samples/move_until.xml)
+
+[サンプルブロック(探索と移動)](lecture07/samples/search_and_move.xml)
+
+[サンプルブロック(ピンポンゲーム)](lecture07/samples/sample_ping_pong.xml)

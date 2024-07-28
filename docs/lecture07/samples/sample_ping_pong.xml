@@ -1,0 +1,20 @@
+var msg, ball, agent;
+
+
+blockFuncs.highlightBlock('JbTWvI8*Kf2l9:J}{R!3');
+blockFuncs.subscribe('world');
+blockFuncs.highlightBlock('AW3M-uS@x80brDsYA*xj');
+while (true) {
+  blockFuncs.highlightBlock('x-,8bMK.Mmb_g^$2qYL5');
+  msg = (blockFuncs.get_message('world'));
+  blockFuncs.highlightBlock('/WzjU;P1k}meL:=)ErQO');
+  if (msg) {
+    blockFuncs.highlightBlock('PCT-6!}uleWE~$V*!!]?');
+    ball = (blockFuncs.get_obj_key(msg, "ball"));
+    blockFuncs.highlightBlock('K)VC#J~3R_D{3|;:{mk7');
+    agent = (blockFuncs.get_obj_key(msg, "agent"));
+    blockFuncs.highlightBlock('J:U?i;e5K!e%%wL3iiRk');
+    blockFuncs.publish('control', [0, 0.2 * ((blockFuncs.get_obj_key(ball, "y")) - (blockFuncs.get_obj_key(agent, "y")))]);
+  }
+  blockFuncs.highlightBlock('AW3M-uS@x80brDsYA*xj');
+}

@@ -349,8 +349,8 @@
             //console.log(agentL.position);
             //console.log(agentL.angle);
             let msg = {ball: {x: bp.x, y: bp.y},
-                       agent: {x: agentR.position.x, y: agentR.position.y, theta: agentR.angle},
-                       user:  {x: agentL.position.x, y: agentL.position.y, theta: agentL.angle}}
+                       opponent: {x: agentR.position.x, y: agentR.position.y, theta: agentR.angle},
+                       agent: {x: agentL.position.x, y: agentL.position.y, theta: agentL.angle}}
             myGlobal.BM.msg_pool.publish('world', msg);
 
             //// agent storategy
