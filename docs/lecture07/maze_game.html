@@ -82,15 +82,15 @@
     });
     myGlobal.wall_thickness = 15;
     { // determine grid
-        const dim_y = Math.floor((myGlobal.height - 2*myGlobal.wall_thickness)/ 160.0);
-        if ( dim_y > 4 ) {
-            myGlobal.dimension_y = 4;
+        const dim_y = Math.floor((myGlobal.height - 2*myGlobal.wall_thickness)/125.0);
+        if ( dim_y > 6 ) {
+            myGlobal.dimension_y = 6;
         } else {
             myGlobal.dimension_y = dim_y;
         }
-        const dim_x = Math.floor((myGlobal.width - 2*myGlobal.wall_thickness)/ 160.0);
-        if ( dim_x > 8 ) {
-            myGlobal.dimension_x = 8;
+        const dim_x = Math.floor((myGlobal.width - 2*myGlobal.wall_thickness)/125.0);
+        if ( dim_x > 6 ) {
+            myGlobal.dimension_x = 6;
         } else {
             myGlobal.dimension_x = dim_x;
         }
@@ -160,7 +160,7 @@
             lineWidth: 1
         },
         label: "agent_main",
-        slop: 0.1,
+        slop: 0.01,
         frictionAir:    0.0,  // 0.01
         friction:       0.05, // 0.1
         frictionStatic: 0.1,  // 0.5
@@ -172,7 +172,7 @@
             category: objCategory,
             mask: envCategory
         },
-        slop: 0.001,
+        slop: 0.01,
         frictionAir:    0.0,  // 0.01
         friction:       0.05, // 0.1
         frictionStatic: 0.1,  // 0.5
@@ -196,22 +196,23 @@
             category: envCategory,
             mask: objCategory,
         },
-        slop: 0.001,
+        slop: 0.1,
         frictionAir:    0.0, // 0.01
         friction:       0.05, // 0.1
         frictionStatic: 0.1, // 0.5
     };
-    const ground_u = Bodies.rectangle(1500, 0,
-                                    3000, 2*myGlobal.wall_thickness, wall_options);
+
+    const ground_u = Bodies.rectangle(myGlobal.width*0.6, 0,
+                                      myGlobal.width*1.2, 2*myGlobal.wall_thickness, wall_options);
     ground_u.label = 'ground_u';
-    const ground_d = Bodies.rectangle(1500, mycanvas.clientHeight,
-                                    3000, 2*myGlobal.wall_thickness, wall_options);
+    const ground_d = Bodies.rectangle(myGlobal.width*0.6, myGlobal.height,
+                                      myGlobal.width*1.2, 2*myGlobal.wall_thickness, wall_options);
     ground_d.label = 'ground_d';
 
     const ground_r = Bodies.rectangle(0, 1500,
                                       2*myGlobal.wall_thickness, 3000, wall_options);
     ground_r.label = 'ground_r';
-    const ground_l = Bodies.rectangle(mycanvas.clientWidth, 1500,
+    const ground_l = Bodies.rectangle(myGlobal.width, 1500,
                                       2*myGlobal.wall_thickness, 3000, wall_options);
     ground_l.label = 'ground_l';
     // vertical   wall -> dim_x - 1, dim_y
@@ -243,7 +244,8 @@
     //makeWall(wall_lst, 1, 1, false);
     //makeWall(wall_lst, 2, 1, false);
     //makeWall(wall_lst, 2, 2, false);
-    for(let i = 0; i < 4; i++ ) {
+    const wall_num = 4 + Math.floor(Math.random()*5);
+    for(let i = 0; i < wall_num; i++ ) {
         if (Math.random() > 0.5) {
             // vertical
             const xx = Math.floor(Math.random() * (myGlobal.dimension_x -1));
@@ -310,10 +312,10 @@
             myGlobal.BM.msg_pool.publish('sensor', msg);
         }
     });
-    const max_vel =  0.4;
-    const min_vel = -0.4;
-    myGlobal.control_vx   = 0.0;
-    myGlobal.control_vy   = 0.0;
+    const max_vel =  2.0;
+    const min_vel = -2.0;
+    myGlobal.control_vx  = 0.0;
+    myGlobal.control_vy  = 0.0;
     myGlobal.control_vth = 0.0;
     Events.on(engine, 'afterUpdate', (ev) => {
         const bp = agent.position;
@@ -343,10 +345,9 @@
             } else if (vth < -6.28) {
                 vth = -6.28;
             }
-            vth = vth / 60.0; // ?? why
             myGlobal.control_vx   = vx * myGlobal.unit / 60.0;
             myGlobal.control_vy   = vy * myGlobal.unit / 60.0;
-            myGlobal.control_vth  = vth;
+            myGlobal.control_vth  = vth / 60.0;
         }
         //// update velocity (local coordinates)
         const sa = Math.sin(agent.angle);
