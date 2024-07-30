@@ -357,10 +357,16 @@
         Body.setVelocity(agent, {x: vx , y: vy});
         Body.setAngularVelocity(agent, myGlobal.control_vth);
         //// sensor publish
+        let ath = agent.angle % (2 * Math.PI);
+        if (ath > Math.PI) {
+            ath -= (2*Math.PI);
+        } else if (ath < -Math.PI) {
+            ath += (2*Math.PI);
+        }
         const msg = {
             agent: {x: (agent.position.x / myGlobal.unit_x),
                     y: (agent.position.y / myGlobal.unit_y),
-                    theta: (agent.angle % Math.PI) },
+                    theta: ath},
         };
         myGlobal.BM.msg_pool.publish('world', msg);
     });
