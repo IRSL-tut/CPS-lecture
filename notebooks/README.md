@@ -21,6 +21,9 @@ https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%
 #### Basic primitives2 / 基本的な立体の扱い方(その2)
 [cps_lecture_geometry01.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_geometry01.ipynb) 
 
+#### Basic primitives2 / 基本的な立体の扱い方(その3)
+[cps_lecture_geometry01.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_geometry02.ipynb) 
+
 ## Robot model / ロボットのモデルを使う
 
 #### Robot model / ロボットモデルの扱い方
