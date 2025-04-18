@@ -7,7 +7,7 @@ Japanese version [here](./index.ja.html)
 # CPS-lecture
 
 <br>
-Class of Introduction to Architecture of Cyber Physical System in TUT [CPSclass(TUT)](./cps_class.html)
+Class of Introduction to Architecture of Cyber Physical System in TUT [CPSclass2025(TUT)](./2025/cps_class_2025.html)
 
 <br>
 ## Robot Programming
