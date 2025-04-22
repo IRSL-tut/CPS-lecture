@@ -15,13 +15,13 @@ https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%
 #### Cascaded-coordinate system (Link) / リンク座標系の考え方
 [cps_lecture_coords01.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_coords01.ipynb)
 
-#### Basic primitives / 基本的な立体の扱い方
+#### Basic primitives / 基本的な立体の扱い方 （基本形状）
 [cps_lecture_geometry00.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_geometry00.ipynb)
 
-#### Basic primitives2 / 基本的な立体の扱い方(その2)
+#### Basic primitives2 / 基本的な立体の扱い方(その2) （点群、矢印、文字）
 [cps_lecture_geometry01.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_geometry01.ipynb) 
 
-#### Basic primitives2 / 基本的な立体の扱い方(その3)
+#### Basic primitives2 / 基本的な立体の扱い方(その3) （直線、オブジェクト）
 [cps_lecture_geometry01.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_geometry02.ipynb) 
 
 ## Robot model / ロボットのモデルを使う
@@ -29,12 +29,11 @@ https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%
 #### Robot model / ロボットモデルの扱い方
 [cps_lecture_robot_model.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_robot_model.ipynb)
 
-#### Building environment / 環境の構築方法
-[create_environment.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/create_environment.ipynb)
-
 #### Robot interface / 実機やシミュレーションと接続するロボットインターフェース
 [cps_lecture_robot_interface.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/cps_lecture_robot_interface.ipynb)
 
+#### Building environment / 環境の構築方法
+[create_environment.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/create_environment.ipynb)
 
 ## RobotBuilder / ロボットを作る
 
@@ -46,6 +45,11 @@ https://github.com/IRSL-tut/CPS-lecture/wiki/Jupyter%E3%81%AE%E4%BD%BF%E3%81%84%
 
 #### Sample making hand-model / ハンドモデルを作るサンプル
 [robotbuilder_make_handmodel.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/robotbuilder_make_handmodel.ipynb)
+
+## インタラクティブシミュレーション
+
+#### シミュレーションサンプル
+[simulation_sample.ipynb](https://github.com/IRSL-tut/CPS-lecture/blob/main/notebooks/simulation_sample.ipynb)
 
 ## Other notebooks
 
