@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Device(Canvas)</title>
+    <script src="./message_pool.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+          let direct_sub = document.getElementById("direct_sub");
+          if (direct_sub) {
+              direct_sub.addEventListener("change", () => {
+                  use_direct_subscribe(direct_sub.checked);
+              });
+          }
+          let node_header = document.getElementById("node_header");
+          if (node_header) {
+              if (myGlobal.connection_type === 'browser') {
+                  node_header.innerHTML += (' : ' + window.name);
+              } else {
+                  node_header.innerHTML += (' : ' + myGlobal.connection_type);
+              }
+          }
+      });
+      function convertListToMsg(inlst) {
+          if ( Array.isArray(inlst) ) {
+              let res;
+              if ( inlst.length >= 5 ) {
+                  res = {'type': inlst[0], 'x': inlst[1], 'y': inlst[2], 'nx': inlst[3], 'ny': inlst[4] }
+              } else if (inlst.length >= 3) {
+                  res = {'type': inlst[0], 'x': inlst[1], 'y': inlst[2]}
+              } else if (inlst.length >= 1) {
+                  res = {'type': inlst[0] }
+              }
+              return res;
+          }
+          return inlst;
+      }
+    </script>
+  </head>
+
+  <body onload="onload_func()">
+    <H2><div id="node_header">Device (Canvas)</div></H2>
+    <canvas id="canvas" width="640" height="480"
+            style="border:1px solid #000000; background: #ffffe8; max-width: 100%; height: auto; max-height: 100%">
+      このブラウザはHTML5のCanvas要素に対応していません。
+    </canvas>
+    <script src="./init_client.js"></script>
+    <script>setupMessageBuffer();</script>
+    <script src="./canvasevent.js"></script>
+    <script>
+      function onload_func() {
+          canvas_init();
+          canvas_use_local_echo(false);
+          canvas_setColor('red');
+          canvas_setLineWidth(3);
+          function canvas_callback(msg) {
+              //console.log(msg);
+              msg = convertListToMsg(msg);
+              //console.log(msg);
+              showMessage(`canvas: ${JSON.stringify(msg)}`);
+              if (msg.type == 'clear') {
+                  canvas_clear();
+              }
+              if (msg.type == 'line') {
+                  canvas_drawLine({x: msg.x, y: msg.y}, {x: msg.nx, y: msg.ny});
+              }
+              if (msg.type == 'point') {
+                  canvas_drawDot({x: msg.x, y: msg.y});
+              }
+          }
+          myGlobal.BM.msg_pool.subscribe('canvas', canvas_callback);
+      }
+    </script>
+
+    <br>
+    <button onclick="canvas_clear()">Clear Device</button>
+    <input id="print_echo" type="checkbox" autocomplete="off" /><label for="print_echo">Printing echo</label>
+    <input id="direct_sub" type="checkbox" autocomplete="off" /><label for="direct_sub">Direct data subscribe</label>
+    <script>
+      let dragging = false;
+      let prevPos  = {x: -1, y: -1};
+      function mouse_callback(msg) {
+          msg = convertListToMsg(msg);
+          //console.log(msg);
+          switch(msg.type) {
+          case 'move':
+              if (dragging) {
+                  canvas_drawLine(msg, prevPos);
+              }
+              prevPos.x = msg.x;
+              prevPos.y = msg.y;
+              break;
+          case 'up':
+              if (dragging) {
+                  canvas_drawLine(msg, prevPos);
+              }
+              dragging = false;
+              break;
+          case 'down':
+              dragging = true;
+              prevPos.x = msg.x;
+              prevPos.y = msg.y;
+              break;
+          }
+      }
+      function use_direct_subscribe (on) {
+          if (on) {
+              myGlobal.BM.msg_pool.subscribe('mouse', mouse_callback);
+          } else {
+              myGlobal.BM.msg_pool.unsubscribe('mouse');
+          }
+      }
+    </script>
+    <ul>
+      <li> subscribe  </li>
+      <li> topic_name: "canvas" </li>
+      <li> message_type: {'type': str, 'x': x, 'y': y, 'nx': nx, 'ny': ny } </li>
+      <li> 'type' is 'line', 'point', 'clear' </li>
+    </ul>
+    <ul>
+      <li>
+        <div id="messageMouse">(cleared)</div>
+      </li>
+    </ul>
+    <pre style="width: 350px; max-height: 300px;">
+      <div id="message"></div>
+    </pre>
+  </body>
+</html>

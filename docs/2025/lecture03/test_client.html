@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+  <title>Test Client</title>
+  <style>
+    #canvas {
+        height: 98%;
+        width: 98%;
+        overflow-y: scroll;
+        overflow-x: scroll;
+    }
+  </style>
+</head>
+
+<script src="./message_pool.js"></script>
+
+<body>
+  <script src="./init_client.js"></script>
+  <script>setupMessageBuffer();</script>
+  <script>
+    function control_callback(msg) {
+        console.log(msg);
+    }
+    myGlobal.BM.msg_pool.subscribe('mouse', control_callback);
+
+  </script>
+</body>

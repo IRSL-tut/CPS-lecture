@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Websocket Client Sample</title>
+    <script src="./message_pool.js"> </script>
+    <script src="./init_client.js"> </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', (e) => {
+          //console.log('loaded');
+          setupMessageBuffer(20);
+          let node_header = document.getElementById("node_header");
+          if (node_header) {
+              node_header.innerHTML += (' : ' + window.name);
+          }
+      });
+    </script>
+</head>
+<body>
+  <H2><div id="node_header">Message GUI</div></H2>
+  <!-- publish -->
+  Publishing a Topic
+  <hr>
+  <button class="button" onclick="sendMsgByButton()" >Publish</button>
+  <div> topic: <input type="text" class="input-area" id="topic-name"></div>
+  <div> Send as a string
+    <input type="checkbox" name="topic-data-proc" id="topic-data-as-string" value="string" checked />
+  </div>
+  <div> &nbsp;data: <input type="text" class="input-area" id="topic-data"></div>
+  <script>
+    function sendMsgByButton() {
+        const tp_name = document.getElementById("topic-name");
+        const tp_data = document.getElementById("topic-data");
+        const tp_as_str = document.getElementById("topic-data-as-string");
+        let msg = tp_data.value;
+        if (!tp_as_str.checked) {
+            try {
+                let tmp_;
+                eval('tmp_ = ' + tp_data.value + ';');
+                msg = tmp_;
+            } catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+        //console.log(tp_name);
+        //console.log(msg);
+        myGlobal.BM.msg_pool.publish(tp_name.value, msg);
+    }
+  </script>
+
+  <!-- subscribe -->
+  <div style="margin-top: 20px;">
+    Subscribing a Topic
+    <hr>
+    <button class="button" onclick="subscribeToTopic()">Subscribe</button>
+    <div> topic: <input type="text" class="input-area" id="subscribe-topic-name"></div>
+    <div>
+      <input type="checkbox" id="use-callback" checked />
+      <label for="use-callback">Use Callback Function</label>
+    </div>
+  </div>
+  <script>
+    function subscribeToTopic() {
+        const topicName = document.getElementById("subscribe-topic-name").value;
+        const useCallback = document.getElementById("use-callback").checked;
+        if (topicName) {
+            if (useCallback) {
+                myGlobal.BM.msg_pool.subscribe(topicName, (msg) => {
+                    console.log(`Received message on topic "${topicName}":`, msg);
+                    document.getElementById("message_text").innerText = `Topic: ${topicName}, Message: ${JSON.stringify(msg)}`;
+                    return false;
+                });
+            } else {
+                myGlobal.BM.msg_pool.subscribe(topicName);
+                console.log(`Subscribed to topic "${topicName}" without callback.`);
+            }
+        } else {
+            console.log("Please enter a topic name to subscribe.");
+        }
+    }
+  </script>
+
+  <!-- get-last-data -->
+  <div style="margin-top: 20px;">
+    Getting topic data
+    <hr>
+    <button class="button" onclick="getLastSubscribedData()">Get Last Message</button>
+    <div> topic: <input type="text" class="input-area" id="get-last-data-topic-name"></div>
+  </div>
+  <script>
+    function getLastSubscribedData() {
+        const topicName = document.getElementById("get-last-data-topic-name").value;
+        const consoleDiv = document.getElementById("console_text");
+        consoleDiv.innerHTML = ""; // Clear previous content
+        if (topicName) {
+            const lastData = myGlobal.BM.msg_pool.readLastMessage(topicName);
+            if (lastData) {
+                consoleDiv.innerHTML = `Topic: ${topicName}, Last Data: ${JSON.stringify(lastData)}`;
+            } else {
+                consoleDiv.innerHTML = `No data available for topic: ${topicName}`;
+            }
+        } else {
+            consoleDiv.innerHTML = "Please enter a topic name.";
+        }
+    }
+  </script>
+
+  <!-- topic-list -->
+  <div style="margin-top: 20px;">
+    Showing Subscribed Topics
+    <hr>
+    <button class="button" onclick="showSubscribedTopics()">Show Subscribed Topics</button>
+    <div id="subscribed-topics-list"></div>
+  </div>
+  <script>
+    function showSubscribedTopics() {
+        const topics = myGlobal.BM.msg_pool.subscribingTopicList;
+        const consoleDiv = document.getElementById("console_text");
+        consoleDiv.innerHTML = ""; // Clear previous content
+        if (topics.length > 0) {
+            consoleDiv.textContent = "Subscribed Topics: " + topics.join(", ");
+        } else {
+            consoleDiv.textContent = "No subscribed topics.";
+        }
+    }
+  </script>
+
+  <div style="margin-top: 30px;"></div>
+  <hr>
+  <div id="console_text"></div>
+  <div id="message_text"></div>
+
+</body>
+</html>

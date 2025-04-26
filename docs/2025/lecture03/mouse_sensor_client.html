@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sensor(Mouse)</title>
+    <script src="./message_pool.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+          let node_header = document.getElementById("node_header");
+          if (node_header) {
+              node_header.innerHTML += (' : ' + window.name);
+          }
+      });
+    </script>
+  </head>
+
+  <body onload="canvas_init()">
+    <H2><div id="node_header">Sensor (Mouse)</div></H2>
+    <canvas id="canvas" width="640" height="480"
+            style="border:1px solid #000000; background: #ffffe8; max-width: 100%; height: auto; max-height: 100%">
+      このブラウザはHTML5のCanvas要素に対応していません。
+    </canvas>
+    <script src="./init_client.js"></script>
+    <script>setupMessageBuffer();</script>
+    <script src="./canvasevent.js"></script>
+    <script>
+      canvas_use_local_echo(false);
+      canvas_register_callback('move', (pos) => {
+          myGlobal.BM.msg_pool.publish('mouse', {type: 'move', x: pos.x,  y: pos.y });
+      });
+      canvas_register_callback('up', (pos) => {
+          myGlobal.BM.msg_pool.publish('mouse', {type: 'up', x: pos.x,  y: pos.y });
+      });
+      canvas_register_callback('down', (pos) => {
+          myGlobal.BM.msg_pool.publish('mouse', {type: 'down', x: pos.x,  y: pos.y });
+      });
+      //canvas_register_callback('click', (pos) => {
+      //    myGlobal.BM.msg_pool.publish('mouse', {type: 'click', x: pos.x,  y: pos.y });
+      //});
+    </script>
+
+    <br>
+    <button onclick="publish_clear()">Clear Device</button>
+    <script>
+      function publish_clear() {
+          myGlobal.BM.msg_pool.publish('canvas', {type: 'clear'});
+          canvas_clear();
+      }
+    </script>
+    <input id="print_echo" type="checkbox" autocomplete="off" /><label for="print_echo">Printing echo</label>
+    <ul>
+      <li> publish  </li>
+      <li> topic_name: "mouse" </li>
+      <li> message_type: {'type': str, 'x': x, 'y': y } </li>
+    </ul>
+    <ul>
+      <li>
+        <div id="messageMouse">(cleared)</div>
+      </li>
+    </ul>
+    <pre style="width: 350px; max-height: 300px;">
+      <div id="message"></div>
+    </pre>
+  </body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SensorHost</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      /* margin: 0;
+      padding: 0; */
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+
+    #canvas-container {
+      width: 50%;
+      height: 600px;
+      margin-bottom: 5px;
+      margin-right: 5px;
+      border: 1px solid black;
+    }
+
+    #right-side {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #button-container {
+      display: grid; /* gridレイアウトを使用 */
+      /* grid-template-columns: repeat(2, 1fr); *//* 列を2つに等分 */
+      grid-template-columns: 1fr  2fr; /* 列を2つに等分 */
+      grid-gap: 10px; /* ボタン間の隙間 */
+      margin-right: 10px; /* テキストエリアとの隙間 */
+    }
+
+    .button {
+      width: auto;
+      /* width: 100%; *//* 横幅を100%に */
+      /* height: 30px; */
+      margin-bottom: 5px;
+      margin-left: 5px;
+      text-align: center;
+      border: 1px solid black;
+    }
+
+    .input-area {
+      width: 85%;
+      /*height: 30px;*/
+      margin-left: 10px;
+    }
+
+    #textarea {
+      width: 98%;
+      height: 98%;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      margin-right: 10px;
+    }
+  </style>
+  <script src="./message_pool.js"> </script>
+</head>
+<body>
+  <div id="canvas-container">  </div>
+
+  <div id="right-side">
+    <div id="button-container">
+      <button class="button" onclick="startClient()"     >Start Client</button> <div><!-- dummy element --></div>
+      <button class="button" onclick="checkClientList()" >Check Clients</button> <div><!-- dummy element --></div>
+      <div><br><!-- dummy element --></div><div><!-- dummy element --></div>
+      <button class="button" onclick="startMaze()" >Start Maze</button>      <div><!-- dummy element --></div>
+      <button class="button" onclick="startPong()" >Start Ping Pong</button> <div><!-- dummy element --></div>
+      <button class="button" onclick="startSensor()" >Start Sensor</button> <div><!-- dummy element --></div>
+      <button class="button" onclick="startDevice()" >Start Device</button> <div><!-- dummy element --></div>
+      <button class="button" onclick="startMsgGui()" >Start Message GUI</button> <div><!-- dummy element --></div>
+      <div><br><!-- dummy element --></div><div><!-- dummy element --></div>
+      <button class="button" onclick="checkMessages()"   >Check Messages</button> <div><!-- dummy element --></div>
+      <button class="button" onclick="sendMsgByButton()" >Send Message</button>
+      <div> topic: <input type="text" class="input-area" id="topic-name"></div>
+      <div> Send as a string
+        <input type="checkbox" name="topic-data-proc" id="topic-data-as-string" value="string" checked />
+      </div>
+      <div> &nbsp;data: <input type="text" class="input-area" id="topic-data"></div>
+      <button class="button" onclick="clearText()" >Clear text</button> <div><!-- dummy element --></div>
+    </div>
+    <textarea id="textarea"></textarea>
+  </div>
+
+  <script>
+    const myGlobal = {};
+    myGlobal.debug = false;
+    myGlobal.clientCount = 0;
+    myGlobal.messageCount = 0;
+    myGlobal.clients = new Map();
+    myGlobal.textarea = document.getElementById("textarea");
+    myGlobal.echoback = true;
+    myGlobal.print = (msg) =>  {
+        console.log(msg);
+        myGlobal.textarea.value += '\n' + msg;
+    };
+    myGlobal.textarea.oninput = (ev) => {
+        if (ev.inputType == 'insertLineBreak') { // input enter-key
+            try {
+                eval(myGlobal.textarea.value);
+            } catch (e) {
+                aleart(e);
+            }
+            // parse
+        }
+    };
+    myGlobal.mp = new MessagePool(10);
+    myGlobal.mp.auto_subscribe = true;
+    //myGlobal.mp.debug = true;
+    const tp_as_str = document.getElementById("topic-data-as-string");
+    tp_as_str.checked = false;
+    function updateClientList() {
+        {
+            const tmp = document.getElementById("client-table");
+            if (tmp) {
+                tmp.remove();
+            }
+        }
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        tbl.id='client-table';
+
+        let cntr = 1;
+        myGlobal.clients.forEach((value, key) => {
+            // create row
+            const row = document.createElement("tr");
+            {
+                const cell = document.createElement("td");
+                const cellText = document.createTextNode(String(cntr));
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+            {
+                const cell = document.createElement("td");
+                const cellText = document.createTextNode(key);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+            // 表の本体の末尾に行を追加
+            tblBody.appendChild(row);
+            cntr += 1;
+        });
+        tbl.appendChild(tblBody);
+        {
+            const tmp = document.getElementById("canvas-container");
+            tmp.appendChild(tbl);
+        }
+        // tbl の border 属性を 2 に設定
+        tbl.setAttribute("border", "2");
+    }
+    function checkClientList() {
+        const lst = [];
+        myGlobal.clients.forEach((value, key) => {
+            if(value.closed) {
+                lst.push(key);
+            }
+        });
+        lst.forEach( key => {
+            myGlobal.clients.delete(key);
+        });
+        updateClientList();
+    }
+    function checkMessages() {
+        {
+            const tmp = document.getElementById("message-table");
+            if (tmp) {
+                tmp.remove();
+            }
+        }
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        tbl.id='message-table';
+        let cntr = 1;
+        {   // header
+            const row = document.createElement("tr");
+            ["id", "topic", "message", "date"].forEach((str) => {
+                const cell = document.createElement("th");
+                cell.appendChild(document.createTextNode(str));
+                row.appendChild(cell);
+            });
+            tblBody.appendChild(row);
+        }
+        myGlobal.mp.topic_map.forEach((value, key) => {
+            const msg = value.index(-1);
+            if (msg != undefined) {
+                const row = document.createElement("tr");
+                {
+                    const cell = document.createElement("td");
+                    const cellText = document.createTextNode(String(cntr));
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                {
+                    const cell = document.createElement("td");
+                    const cellText = document.createTextNode(key);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                {
+                    const cell = document.createElement("td");
+                    const cellText = document.createTextNode(JSON.stringify(msg[1]));
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                {
+                    const cell = document.createElement("td");
+                    const cellText = document.createTextNode(String(msg[0]));
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                // 表の本体の末尾に行を追加
+                tblBody.appendChild(row);
+                cntr += 1;
+            }
+        });
+        tbl.appendChild(tblBody);
+        if(cntr > 1) {
+            const tmp = document.getElementById("canvas-container");
+            tmp.appendChild(tbl);
+        }
+        tbl.setAttribute("border", "2");
+    }
+    function sendMessageToClients(msg, source = undefined) {
+        var closed = false;
+        //const jmsg = JSON.parse(msg);
+        //if ("topic" in jmsg) {
+        //    jmsg.topic
+        //}
+        myGlobal.clients.forEach((value, key) => {
+            if (value.closed) {
+                closed = true;
+            } else {
+                if (value != source) {
+                    value.postMessage(msg, "*");
+                }
+            }
+        });
+        if (closed) {
+            checkClientList();
+        }
+    }
+    function startClient() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Client:' + len;
+        var new_w = window.open("./blockly_irsl.html", tabname);
+        //console.log('close: ' + tabname);
+        //checkClientList();
+        //};
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startMaze() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Maze:' + len;
+        // add options
+        var new_w = window.open("./maze_game.html", tabname);
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startPong() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Pong:' + len;
+        // add options
+        var new_w = window.open("./ping_pong_game.html", tabname);
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startSensor() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Sensor:' + len;
+        // add options
+        var new_w = window.open("./mouse_sensor_client.html", tabname, "top=90,left=90,width=740,height=740,menubar=no,toolbar=no,location=no");
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startDevice() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Device:' + len;
+        // add options
+        var new_w = window.open("./canvas_device_client.html", tabname, "top=70,left=70,width=740,height=740,menubar=no,toolbar=no,location=no");
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function startMsgGui() {
+        checkClientList();
+        var len = myGlobal.clientCount;
+        var tabname = 'Device:' + len;
+        // add options
+        var new_w = window.open("./msg_gui_client.html", tabname, "top=50,left=50,width=740,height=740,menubar=no,toolbar=no,location=no");
+        myGlobal.clients.set(tabname, new_w);
+        myGlobal.clientCount += 1;
+        updateClientList();
+    }
+    function sendMsgByButton() {
+        const tp_name = document.getElementById("topic-name");
+        const tp_data = document.getElementById("topic-data");
+        const tp_as_str = document.getElementById("topic-data-as-string");
+        let msg = tp_data.value;
+        if (!tp_as_str.checked) {
+            try {
+                let tmp_;
+                eval('tmp_ = ' + tp_data.value + ';');
+                msg = tmp_;
+            } catch (e) {
+                myGlobal.print(String(e));
+                return;
+            }
+        }
+        const msg_str = MessagePool.makeMessageStr(tp_name.value, msg);
+        myGlobal.print("pub: " + msg_str);
+        sendMessageToClients(msg_str);
+    }
+    function clearText() {
+        myGlobal.textarea.value = "";
+    }
+    //// events
+    window.addEventListener("message",
+                            (ev) => {
+                                myGlobal.messageCount += 1;
+                                if (myGlobal.debug) {
+                                    console.log('msg:' + ev.data);
+                                    console.log(ev.origin);
+                                    console.log(ev.source);
+                                }
+                                myGlobal.mp._receiveData(ev.data);
+                                if (myGlobal.echoback) {
+                                    sendMessageToClients(ev.data, null); // do echo-back
+                                } else {
+                                    sendMessageToClients(ev.data, ev.source); // do NOT echo-back
+                                }
+                            }, false);
+  </script>
+</body>
+</html>
