@@ -9,7 +9,7 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 # 第3回
 
-[通信環境ホスト](lecture03/sensor_host.html)
+[通信環境ホスト/ビジュアルプログラミング環境](lecture03/sensor_host.html)
 
 ## ヴィジュアルプログラム
 
@@ -25,11 +25,11 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 [サンプルブロック(購読-出版プログラム)](lecture03/samples/subscribe_publish.xml)
 
-[(マウスセンサーを使う)](lecture03/samples/xxx.xml)
+[マウスセンサーを使う](lecture03/samples/get_mouse_message.xml)
 
-[(キャンバスデバイスを使う)](lecture03/samples/xxx.xml)
+[キャンバスデバイスを使う](lecture03/samples/send_canvas_message.xml)
 
-[(出版購読通信による)](lecture03/samples/xxx.xml)
+[出版購読通信によるセンサデバイスフィードバック](lecture03/samples/sensor_device_feedback.xml)
 
 [サンプルブロック(遠隔手続き実行クライアント)](lecture03/samples/action_client.xml)
 
