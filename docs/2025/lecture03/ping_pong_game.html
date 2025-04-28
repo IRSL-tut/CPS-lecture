@@ -10,44 +10,13 @@
     }
   </style>
 </head>
-<script src="./message_pool.js"></script>
-<script src="./matter.min.js"></script>
+<script src="./libs/message_pool.js"></script>
+<script src="./thirdparty/matter.min.js"></script>
 <body>
   <div id="canvas"> </div>
-  <script>
-    if (window.name) {
-        document.title = window.name;
-    }
-    const myGlobal = {};
-    const url = new URL(window.location);
-    const params = url.searchParams;
-    if (params.size > 0 || !window.opener) {
-        const wshost = (() => {
-            let res = params.get('host');
-            if (res) {
-                return res;
-            } else {
-                return 'localhost';
-            }
-        })();
-        const wsport = (() => {
-            let res = params.get('port');
-            if (res) {
-                return res;
-            } else {
-                return '5001';
-            }
-        })();
-        const addr = 'ws://' + wshost + ':' + wsport;
-        console.log('server address: ' + addr);
-        myGlobal.BM = new WebMessage(addr, 1);
-        myGlobal.BM.msg_pool.debug = false;
-    } else {
-        myGlobal.opener = window.opener;
-        myGlobal.BM = new BrowserMessage(myGlobal.opener, 1);
-        myGlobal.BM.msg_pool.debug = false;
-    }
-  </script>
+  <script src="./libs/init_client.js"></script>
+  <script>setupMessageBuffer();</script>
+  <!-- game main -->
   <script>
     // module aliases
     var Engine = Matter.Engine,

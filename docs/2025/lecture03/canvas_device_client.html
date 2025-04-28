@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Device(Canvas)</title>
-    <script src="./message_pool.js"></script>
+    <script src="./libs/message_pool.js"></script>
     <script>
       window.addEventListener('DOMContentLoaded', () => {
           let direct_sub = document.getElementById("direct_sub");
@@ -44,9 +44,9 @@
             style="border:1px solid #000000; background: #ffffe8; max-width: 100%; height: auto; max-height: 100%">
       このブラウザはHTML5のCanvas要素に対応していません。
     </canvas>
-    <script src="./init_client.js"></script>
+    <script src="./libs/init_client.js"></script>
     <script>setupMessageBuffer();</script>
-    <script src="./canvasevent.js"></script>
+    <script src="./libs/canvasevent.js"></script>
     <script>
       function onload_func() {
           canvas_init();
