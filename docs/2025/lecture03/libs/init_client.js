@@ -49,7 +49,7 @@ function setupMessageBuffer(buffer_size=1, force_websocket=false)
       ws_url = 'ws://' + wshost + ':' + wsport;
     }
     console.log('server address: ' + ws_url);
-    myGlobal.BM = new WebMessage(ws_url, 1);
+    myGlobal.BM = new WebMessage(ws_url, buffer_size);
     myGlobal.BM.msg_pool.debug = false;
     if (ssl) {
       myGlobal.connection_type = 'websocket';
@@ -58,7 +58,7 @@ function setupMessageBuffer(buffer_size=1, force_websocket=false)
     }
   } else {
     myGlobal.opener = window.opener;
-    myGlobal.BM = new BrowserMessage(myGlobal.opener, 1);
+    myGlobal.BM = new BrowserMessage(myGlobal.opener, buffer_size);
     myGlobal.BM.msg_pool.debug = false;
     myGlobal.connection_type = 'browser';
   }

@@ -21,17 +21,20 @@
       このブラウザはHTML5のCanvas要素に対応していません。
     </canvas>
     <script src="./libs/init_client.js"></script>
-    <script>setupMessageBuffer();</script>
+    <script>setupMessageBuffer(100);</script>
     <script src="./libs/canvasevent.js"></script>
     <script>
       canvas_use_local_echo(false);
       canvas_register_callback('move', (pos) => {
+          //console.log('mv: ' + pos.x + ', ' + pos.y);
           myGlobal.BM.msg_pool.publish('mouse', {type: 'move', x: pos.x,  y: pos.y });
       });
       canvas_register_callback('up', (pos) => {
+          //console.log('up: ' + pos.x + ', ' + pos.y);
           myGlobal.BM.msg_pool.publish('mouse', {type: 'up', x: pos.x,  y: pos.y });
       });
       canvas_register_callback('down', (pos) => {
+          //console.log('dw: ' + pos.x + ', ' + pos.y);
           myGlobal.BM.msg_pool.publish('mouse', {type: 'down', x: pos.x,  y: pos.y });
       });
       //canvas_register_callback('click', (pos) => {

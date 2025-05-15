@@ -45,7 +45,7 @@
       このブラウザはHTML5のCanvas要素に対応していません。
     </canvas>
     <script src="./libs/init_client.js"></script>
-    <script>setupMessageBuffer();</script>
+    <script>setupMessageBuffer(100);</script>
     <script src="./libs/canvasevent.js"></script>
     <script>
       function onload_func() {
@@ -89,17 +89,20 @@
               }
               prevPos.x = msg.x;
               prevPos.y = msg.y;
+              //console.log('mv: ' + msg.x + ', ' + msg.y);
               break;
           case 'up':
               if (dragging) {
                   canvas_drawLine(msg, prevPos);
               }
               dragging = false;
+              //console.log('up: ' + msg.x + ', ' + msg.y);
               break;
           case 'down':
               dragging = true;
               prevPos.x = msg.x;
               prevPos.y = msg.y;
+              //console.log('dw: ' + msg.x + ', ' + msg.y);
               break;
           }
       }
