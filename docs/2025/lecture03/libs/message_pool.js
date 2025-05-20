@@ -218,11 +218,15 @@ class MessagePool {
       return buf.get_front()
     }
   }
-  readLastMessage(topic_name)// read last message
+  readLastMessage(topic_name, clear = false)// read last message
   {
     if ( this.topic_map.has(topic_name) ) {
       var buf = this.topic_map.get(topic_name);
-      return buf.index(-1);
+      var ret = buf.index(-1);
+      if (clear) {
+        buf.clear();
+      }
+      return ret;
     }
   }
   subscribe(topic_name, callback = null)//("topic_name", function=None)

@@ -865,6 +865,10 @@ const my_toolbox = {
           kind: 'block',
         },
         {
+          type: 'get_last_message',
+          kind: 'block',
+        },
+        {
           type: 'get_id',
           kind: 'block',
         },

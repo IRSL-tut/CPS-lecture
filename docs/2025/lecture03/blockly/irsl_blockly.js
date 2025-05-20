@@ -188,6 +188,17 @@ Blockly.Blocks['get_message'] = {
         this.setHelpUrl("");
     }
 };
+Blockly.Blocks['get_last_message'] = {
+    init: function() {
+        this.appendValueInput("topic")
+            .setCheck("String")
+            .appendField("get_last_message:topic");
+        this.setOutput(true, null);
+        this.setStyle('message_blocks')
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
 Blockly.Blocks['get_id'] = {
     init: function() {
         this.appendDummyInput()
@@ -340,6 +351,12 @@ javascript.javascriptGenerator.forBlock['publish'] = function(block, generator) 
 javascript.javascriptGenerator.forBlock['get_message'] = function(block, generator) {
   var value_topic = generator.valueToCode(block, 'topic', javascript.Order.ATOMIC);
   var code = 'blockFuncs.get_message(' + value_topic + ')';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, javascript.Order.NONE];
+};
+javascript.javascriptGenerator.forBlock['get_last_message'] = function(block, generator) {
+  var value_topic = generator.valueToCode(block, 'topic', javascript.Order.ATOMIC);
+  var code = 'blockFuncs.get_last_message(' + value_topic + ')';
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, javascript.Order.NONE];
 };

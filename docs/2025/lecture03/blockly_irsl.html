@@ -295,6 +295,13 @@
         }
         return null;
     }
+    function get_last_message(topic) {
+        var msg = myGlobal.BM.msg_pool.readLastMessage(topic, true);
+        if (msg) {
+            return msg[1];
+        }
+        return null;
+    }
     function get_obj_key(obj, key)  {
         if (key in obj) {
             return obj[key];
@@ -313,6 +320,7 @@
     blockFuncs.subscribe = subscribe;
     blockFuncs.publish = publish;
     blockFuncs.get_message = get_message;
+    blockFuncs.get_last_message = get_last_message;
     blockFuncs.get_id = getID;
     blockFuncs.register_proc = registerProc;
     blockFuncs.delete_proc = deleteProc;
