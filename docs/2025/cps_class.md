@@ -4,14 +4,17 @@ layout: default
 
 質問は cps-lecture-staff@irsl.eiiris までお願いします。 (末尾に .tut.ac.jp をつける)
 <br>
- 
+
 Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac.jp )
 
-# 第3回
+# プログラム実行環境
 
 [通信環境ホスト/ビジュアルプログラミング環境](lecture03/sensor_host.html)
 
-## ヴィジュアルプログラム
+
+## サンプルプログラム(ブロック)
+
+### ヴィジュアルプログラム
 
 [サンプルプログラム(IF文)](lecture03/samples/sample_if.xml)
 
@@ -19,7 +22,7 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 [サンプルプログラム(石とりゲーム)](lecture03/samples/stone_game.xml)
 
-## 出版購読型通信
+### 出版購読型通信
 
 [サンプルブロック(購読プログラム)](lecture03/samples/subscribe_echo.xml)
 
@@ -35,7 +38,7 @@ Any questions should be sent to cps-lecture-staff@irsl.eiiris ( End with .tut.ac
 
 [サンプルブロック(遠隔手続き実行サーバー)](lecture03/samples/action_server.xml)
 
-## ゲーム環境
+### ゲーム環境
 
 [サンプルブロック(環境データを読む)](lecture03/samples/read_world.xml)
 
