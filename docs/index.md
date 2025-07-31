@@ -21,7 +21,7 @@ Learn the basics of robot programming.
 ## Robot Assembler
 How to use Robot Assembler.
 
-### [Robot Assembler Manual](https://github.com/IRSL-tut/CPS-lecture/wiki/RobotAssembler%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9)
+### [Robot Assembler Manual](https://github.com/IRSL-tut/CPS-lecture/wiki/Usage-of-RobotAssembler)
 
 <br>
 ## Robot Simulation
