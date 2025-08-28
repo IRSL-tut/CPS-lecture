@@ -33,7 +33,7 @@ TUTでの講義CPS基礎については [CPS基礎2025(TUT)](./2025/cps_class.ht
 ## 実機ロボットを作る（Building Actual Robot）
 ロボットアセンブラーで作ったロボットの実機を作ります。
 
-### [アセンブラーロボット：実機の作り方](https://github.com/IRSL-tut/CPS-lecture/wiki/Assember%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%9F%E3%83%AD%E3%83%9C%E3%83%83%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95)
+### [アセンブラーロボット：実機の作り方](https://github.com/IRSL-tut/irsl_raspi_controller/blob/main/README.md)
 
 <br>
 ## プログラミングのリファレンス（Programming Reference）
