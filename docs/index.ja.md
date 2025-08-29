@@ -26,7 +26,8 @@ English version [here](./index.html)
 
 ### [IRSL プログラムリファレンス](https://irsl-tut.github.io/irsl_documents/ja)
 
-
+<br>
+<br>
 # Robot configuration system
 
 <br>
@@ -48,6 +49,8 @@ English version [here](./index.html)
 ### [アセンブラーロボット：実機の作り方](https://github.com/IRSL-tut/irsl_raspi_controller/blob/main/README.md)
 
 
+<br>
+<br>
 # 講義と同じシステムを試してみる（How to try our system）
 
 講義と同じシステムを自身のPCで動作させる方法についてです。
