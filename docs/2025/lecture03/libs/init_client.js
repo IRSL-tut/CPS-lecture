@@ -42,6 +42,29 @@ function setupMessageBuffer(buffer_size=1, force_websocket=false)
         return false;
       }
     })();
+    const auth = (() => {
+      let res = params.get('auth');
+      console.log(res);
+      if (res && ( res == "true" || res > 0 )) {
+        console.log('true');
+        return true;
+      } else {
+        console.log('false');
+        return false;
+      }
+    })();
+    const bufsize = (() => {
+      let res = params.get('size');
+      console.log(res);
+      if (res) {
+        res = Number(res);
+        console.log(res);
+        return res;
+      } else {
+        console.log('100');
+        return buffer_size;
+      }
+    })();
     let ws_url;
     if (ssl) {
       ws_url = 'wss://' + wshost + ':' + wsport;
@@ -49,7 +72,7 @@ function setupMessageBuffer(buffer_size=1, force_websocket=false)
       ws_url = 'ws://' + wshost + ':' + wsport;
     }
     console.log('server address: ' + ws_url);
-    myGlobal.BM = new WebMessage(ws_url, buffer_size);
+    myGlobal.BM = new WebMessage(ws_url, buffer_size, auth);
     myGlobal.BM.msg_pool.debug = false;
     if (ssl) {
       myGlobal.connection_type = 'websocket';

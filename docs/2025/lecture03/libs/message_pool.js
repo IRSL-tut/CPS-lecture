@@ -306,16 +306,17 @@ class MessagePool {
 };
 
 class WebMessage {
-  constructor(addr, _size = 100)
+  constructor(addr, _size = 100, _auth = false)
   {
     this.addr = addr;
     this.size = _size;
+    this.authorized = _auth;
     this.connection = false;
     this.connect();
   }
   connect()
   {
-    this.ws_client = new WebSocket(this.addr);
+    this.ws_client = new WebSocket(this.url, null, null, null, {rejectUnauthorized: this.authorized});
     this.msg_pool  = new MessagePool(this.size);
     const _wsc = this.ws_client;
     this.msg_pool.setPublishMethod( (instr) => {
@@ -331,13 +332,16 @@ class WebMessage {
     };
     this.ws_client.onopen = (e) => {
       console.log('ws open');
+      // write header
     };
     this.ws_client.onerror = (e) => {
       console.log('ws error');
-    };// bundle
+      // write header
+    };
     this.ws_client.onclose = (e) => {
       console.log('ws closed');
-    };// bundle
+      // write header
+    };
   }
 };
 
