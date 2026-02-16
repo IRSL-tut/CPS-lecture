@@ -316,7 +316,7 @@ class WebMessage {
   }
   connect()
   {
-    this.ws_client = new WebSocket(this.url, null, null, null, {rejectUnauthorized: this.authorized});
+    this.ws_client = new WebSocket(this.addr, null, null, null, {rejectUnauthorized: this.authorized});
     this.msg_pool  = new MessagePool(this.size);
     const _wsc = this.ws_client;
     this.msg_pool.setPublishMethod( (instr) => {
