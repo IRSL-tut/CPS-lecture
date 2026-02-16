@@ -1,0 +1,3 @@
+[submodule "docs/irsl_choreonoid"]
+	path = docs/irsl_choreonoid
+	url = https://github.com/IRSL-tut/irsl_choreonoid
