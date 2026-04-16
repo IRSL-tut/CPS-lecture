@@ -26,6 +26,9 @@ cds = coordinates()
 di.addObject(vis_cds)
 di.addObject(mkshapes.makeCoords())
 
+# %%
+# %display
+
 # %% [markdown]
 # ## プロパティ
 # https://irsl-tut.github.io/irsl_documents/ja/coordinates.html#properties
@@ -299,6 +302,7 @@ cds2.equal(cds)
 
 # %% [markdown]
 # #### move_to
+# under construction
 
 # %% [markdown]
 # #### translate
@@ -322,8 +326,9 @@ cds2.translate(fv(0, 0, 0.5), wrt=coordinates.wrt.world)
 # %%
 vis_cds.newcoords(cds2)
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # #### locate
+# under construction
 
 # %% [markdown]
 # #### rotate
@@ -340,14 +345,21 @@ cds2.rotate(0.5, coordinates.X, wrt = coordinates.wrt.world)
 # %%
 vis_cds.newcoords(cds2)
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # #### rotate_with_matrix
+# rotate self coordinates by rotation matrix
 
 # %% [markdown]
 # #### orient
+# translate <-> locate
+#
+# rotate <-> orient
+#
+# (relative <-> absolute)
 
 # %% [markdown]
 # #### orient_with_matrix
+# orient self coordinates by rotation matrix
 
 # %% [markdown]
 # #### inverse
@@ -363,3 +375,66 @@ cpy_cds.transform(cds)
 
 # %% [markdown]
 # #### transform
+
+# %%
+cds = coordinates(fv(0.5, 0.5, 0.3))
+cds.rotate(PI/2, coordinates.X)
+
+# %%
+cds2 = coordinates(fv(0, 0.5, 0))
+cds2.rotate(PI/4, coordinates.Z)
+
+# %%
+di.clear()
+di.addObject(mkshapes.makeCoords())
+
+# %%
+aa = mkshapes.makeCoords(coords=cds,  length=0.3, lineWidth=4)
+bb = mkshapes.makeCoords(coords=cds2, length=0.3, lineWidth=8)
+di.addObjects((aa, bb))
+
+# %%
+res = cds.copy()
+res.transform(cds2)
+
+# %%
+di.addObject(mkshapes.makeCoords(coords=res, length=0.3, lineWidth=4))
+
+# %%
+cds.transformation(res)
+
+# %% [markdown]
+# $cds \rightarrow A$
+#
+# $cds2 \rightarrow B$
+#
+# 定義より
+#
+# $ A.trasnsform(B) \rightarrow AB $
+#
+# 確認式
+#
+# $ A.transformation(AB) \rightarrow A^{-1} AB = B $
+
+# %%
+res = cds.copy()
+res.transform(cds2, wrt = coordinates.wrt.world)
+
+# %%
+cds2.transformation(res)
+
+# %% [markdown]
+# 定義より
+#
+# $ A.trasnsform(B, wrt=world) \rightarrow BA $
+#
+# 確認式
+#
+# $ B.transformation(BA) \rightarrow B^{-1} BA = A $
+#
+
+# %%
+di.addObject(mkshapes.makeCoords(coords=res, length=0.3, lineWidth=4))
+
+# %%
+# %display
