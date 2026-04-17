@@ -24,7 +24,7 @@ cds = coordinates()
 
 # %%
 di.addObject(vis_cds)
-di.addObject(mkshapes.makeCoords())
+di.addObject(mkshapes.makeCoords(length=3.0, lineWidth=2))
 
 # %%
 # %display
@@ -377,34 +377,34 @@ cpy_cds.transform(cds)
 # #### transform
 
 # %%
-cds = coordinates(fv(0.5, 0.5, 0.3))
-cds.rotate(PI/2, coordinates.X)
+cds1 = coordinates(fv(0.5, 0.5, 0.3))
+cds1.rotate(PI/2, coordinates.X)
 
 # %%
-cds2 = coordinates(fv(0, 0.5, 0))
+cds2 = coordinates(fv(0.1, 0.5, 0))
 cds2.rotate(PI/4, coordinates.Z)
 
 # %%
 di.clear()
-di.addObject(mkshapes.makeCoords())
+di.addObject(mkshapes.makeCoords(length=3.0, lineWidth=2))
 
 # %%
-aa = mkshapes.makeCoords(coords=cds,  length=0.3, lineWidth=4)
+aa = mkshapes.makeCoords(coords=cds1,  length=0.3, lineWidth=4)
 bb = mkshapes.makeCoords(coords=cds2, length=0.3, lineWidth=8)
 di.addObjects((aa, bb))
 
 # %%
-res = cds.copy()
+res = cds1.copy()
 res.transform(cds2)
 
 # %%
 di.addObject(mkshapes.makeCoords(coords=res, length=0.3, lineWidth=4))
 
 # %%
-cds.transformation(res)
+cds1.transformation(res)
 
 # %% [markdown]
-# $cds \rightarrow A$
+# $cds1 \rightarrow A$
 #
 # $cds2 \rightarrow B$
 #
@@ -417,8 +417,32 @@ cds.transformation(res)
 # $ A.transformation(AB) \rightarrow A^{-1} AB = B $
 
 # %%
-res = cds.copy()
+ln1 = mkshapes.makeLineAxis(fv(0.,0,0), cds2.pos, axis_length=0.08, lineWidth=2)
+
+# %%
+ln2 = mkshapes.makeLineAxis(cds1.pos, res.pos, axis_length=0.08, lineWidth=2)
+
+# %%
+di.addObjects((ln1, ln2))
+
+# %%
+res = cds1.copy()
 res.transform(cds2, wrt = coordinates.wrt.world)
+
+# %%
+# %display
+
+# %%
+di.clear()
+di.addObject(mkshapes.makeCoords(length=3.0, lineWidth=2))
+di.addObjects((aa, bb))
+
+# %%
+res = cds1.copy()
+res.transform(cds2, wrt = coordinates.wrt.world)
+
+# %%
+di.addObject(mkshapes.makeCoords(coords=res, length=0.3, lineWidth=4))
 
 # %%
 cds2.transformation(res)
@@ -435,6 +459,11 @@ cds2.transformation(res)
 
 # %%
 di.addObject(mkshapes.makeCoords(coords=res, length=0.3, lineWidth=4))
+
+# %%
+ln1 = mkshapes.makeLineAxis(fv(0.,0,0), cds1.pos, axis_length=0.08, lineWidth=2)
+ln2 = mkshapes.makeLineAxis(cds2.pos, res.pos, axis_length=0.08, lineWidth=2)
+di.addObjects((ln1, ln2))
 
 # %%
 # %display
