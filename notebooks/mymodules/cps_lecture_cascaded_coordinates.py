@@ -20,9 +20,7 @@ exec(open('/choreonoid_ws/install/share/irsl_choreonoid/sample/irsl_import.py').
 
 # %%
 di = DrawInterface()
-
-# %%
-di.clear()
+di.addObject(mkshapes.makeCoords(length=4, lineWidth=1))
 
 # %% [markdown]
 # ## 座標系の作成
@@ -87,6 +85,7 @@ cds2.transformation(cds3)
 
 # %%
 di.clear()
+di.addObject(mkshapes.makeCoords(length=4, lineWidth=1))
 
 # %% [markdown]
 # ## リンクの作成
@@ -155,3 +154,5 @@ ax2.rotate(0.8, coordinates.Y)
 
 # %%
 ee
+
+# %%
