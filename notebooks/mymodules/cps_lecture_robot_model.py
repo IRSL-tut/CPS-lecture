@@ -356,7 +356,7 @@ class HRP4CModel(RobotModel):
                                 0, 0, 0, 0, 0, 0, ## LARM
                                 0, 0, 0, 0, 0, 0, ## RARM
                                 ])
-        robot.registerNamedPose('pose0',
+        self.registerNamedPose('pose0',
                         angles = [0, 0, -0.5, 1.0, -.5, 0, 0, ## LLEG
                                  0, 0, -0.5, 1.0, -0.5, 0, 0, ## RLEG
                                  0, 0, 0, ## CHEST
@@ -483,3 +483,5 @@ drawJoint(robot.jointList[25], y_offset=+0.2)
 
 # %%
 # %display
+
+# %%
